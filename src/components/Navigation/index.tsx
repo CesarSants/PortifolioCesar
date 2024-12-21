@@ -117,9 +117,12 @@ const Navigation = () => {
   const [isAtTop, setIsAtTop] = useState(true)
   const [isAtBottom, setIsAtBottom] = useState(false)
 
-  // Função para obter a altura visível da janela
+  // Função para obter a altura do visualViewport (para dispositivos móveis)
   const getViewportHeight = () => {
-    return window.innerHeight
+    // Verifica se visualViewport está disponível
+    return window.visualViewport
+      ? window.visualViewport.height
+      : window.innerHeight
   }
 
   useEffect(() => {
@@ -135,25 +138,39 @@ const Navigation = () => {
     }
 
     const onResize = () => {
-      // Recalcula a altura do documento e a rolagem quando a janela for redimensionada
+      // Atualiza a rolagem quando a janela for redimensionada
       updateScroll()
     }
 
+    const onVisualViewportChange = () => {
+      // Recalcula a altura quando o visualViewport mudar
+      updateScroll()
+    }
+
+    // Atualizar a rolagem com um intervalo para garantir que sempre esteja correto
+    const intervalId = setInterval(updateScroll, 500) // Atualiza a cada 500ms
+
     window.addEventListener('scroll', updateScroll)
-    window.addEventListener('resize', onResize) // Recalcular a rolagem no resize da janela
+    window.addEventListener('resize', onResize)
+
+    // Verifica mudanças no visualViewport (no caso de dispositivos móveis)
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', onVisualViewportChange)
+    }
 
     // Chama a função de atualização inicial
     updateScroll()
 
-    // Define um intervalo para corrigir rolagem de forma mais robusta
-    const interval = setInterval(() => {
-      updateScroll()
-    }, 200) // Atualiza a cada 200ms para corrigir a rolagem conforme mudanças na tela
-
     return () => {
+      clearInterval(intervalId) // Limpa o intervalo ao desmontar o componente
       window.removeEventListener('scroll', updateScroll)
       window.removeEventListener('resize', onResize)
-      clearInterval(interval) // Limpa o intervalo ao desmontar o componente
+      if (window.visualViewport) {
+        window.visualViewport.removeEventListener(
+          'resize',
+          onVisualViewportChange
+        )
+      }
     }
   }, [])
 
