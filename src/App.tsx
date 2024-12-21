@@ -24,7 +24,7 @@ const App = () => {
   return (
     <Provider store={store}>
       <BrowserRouter>
-        <ScrollOnLoad />
+        {/* <ScrollOnLoad /> */}
         <GlobalCss />
         <Particles />
         <Header />
