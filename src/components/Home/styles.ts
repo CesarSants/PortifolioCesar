@@ -34,7 +34,7 @@ export const Container = styled.main`
 
     text-align: center;
     color: #c4acf0;
-    font-size: 4.06vh;
+    font-size: 1.1rem;
     /* font-size: 30px; */
     text-shadow: 3px 3px 8px rgba(0, 0, 0, 0.9),
       -3px -3px 8px rgba(0, 0, 0, 0.9), 0 0 15px rgba(0, 0, 0, 0.5);

@@ -98,10 +98,11 @@ const Projects: React.FC = () => {
         cursor: 'pointer',
         display: 'flex',
         position: 'absolute',
-        left: '-23px',
+        left: '-33px',
         top: '50%',
         transform: 'translateY(-50%)',
-        zIndex: 2
+        zIndex: 2,
+        padding: 10
       }}
       aria-label="Previous Slide"
     >
@@ -118,10 +119,11 @@ const Projects: React.FC = () => {
         cursor: 'pointer',
         display: 'flex',
         position: 'absolute',
-        right: '-23px',
+        right: '-33px',
         top: '50%',
         transform: 'translateY(-50%)',
-        zIndex: 2
+        zIndex: 2,
+        padding: 10
       }}
       aria-label="Next Slide"
     >

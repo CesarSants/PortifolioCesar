@@ -119,7 +119,7 @@ export const Head = styled.header`
     display: flex;
     align-items: center;
     justify-content: center;
-    overflow: auto;
+    overflow-y: auto;
     transition: height 0.5s ease-in-out, opacity 0.5s ease-in-out;
     opacity: 0;
     border-bottom-left-radius: 42px;
@@ -150,7 +150,7 @@ export const Head = styled.header`
     transition: opacity 0.5s ease-in-out;
     position: absolute;
     padding-bottom: 16px;
-    padding-top: 250px;
+    padding-top: 15rem;
     top: 0;
   }
 
@@ -164,6 +164,10 @@ export const Head = styled.header`
     opacity: 0;
     transform: translateY(-20px);
     transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
+
+    @media (max-width: 650px) {
+      font-size: 2rem;
+    }
     &:last-child {
       padding-bottom: 16px;
     }
@@ -222,6 +226,11 @@ export const Head = styled.header`
     transition: opacity 0.4s ease-out;
     opacity: 0;
     z-index: 1;
+
+    @media (max-width: 678px) {
+      left: 15vw;
+      /* left: none; */
+    }
   }
   .chevron-down img,
   .chevron-up img {
