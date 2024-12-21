@@ -127,7 +127,7 @@ export const Container = styled.div`
     border-bottom: none;
     box-shadow: 0 0 0 #666 inset, 0 0 8px #666 inset;
 
-    text-align: justify;
+    text-align: center;
     display: flex;
     flex-direction: column;
     align-items: center;

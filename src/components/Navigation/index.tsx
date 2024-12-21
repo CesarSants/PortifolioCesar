@@ -8,6 +8,15 @@ const Navigation = () => {
   const [isAtBottom, setIsAtBottom] = useState(false)
 
   useEffect(() => {
+    if (window.scrollY === 0) {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      })
+    }
+  }, [])
+
+  useEffect(() => {
     const updateScroll = () => {
       const scrollY = window.scrollY
       const height = document.documentElement.scrollHeight - window.innerHeight
@@ -15,8 +24,8 @@ const Navigation = () => {
       setScrollPosition(scrollY)
       setDocumentHeight(height)
 
-      setIsAtTop(scrollY <= -1)
-      setIsAtBottom(Math.abs(scrollY - height) <= -1)
+      setIsAtTop(scrollY <= 6)
+      setIsAtBottom(Math.abs(scrollY - height) <= 6)
     }
 
     window.addEventListener('scroll', updateScroll)
@@ -30,6 +39,7 @@ const Navigation = () => {
       Math.round(window.scrollY / window.innerHeight) * window.innerHeight +
       offset +
       1
+
     window.scrollTo({
       top: Math.max(0, Math.min(targetPosition, documentHeight)),
       behavior: 'smooth'
