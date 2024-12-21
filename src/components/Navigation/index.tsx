@@ -15,8 +15,8 @@ const Navigation = () => {
       setScrollPosition(scrollY)
       setDocumentHeight(height)
 
-      setIsAtTop(scrollY <= 2)
-      setIsAtBottom(Math.abs(scrollY - height) <= 150)
+      setIsAtTop(scrollY <= 6)
+      setIsAtBottom(Math.abs(scrollY - height) <= 6)
     }
 
     window.addEventListener('scroll', updateScroll)
