@@ -117,19 +117,15 @@ const Navigation = () => {
   const [isAtTop, setIsAtTop] = useState(true)
   const [isAtBottom, setIsAtBottom] = useState(false)
 
-  // Função para calcular a altura da janela considerando a barra de abas e pesquisa
+  // Função para obter a altura visível da janela
   const getViewportHeight = () => {
-    if (window.visualViewport) {
-      return window.visualViewport.height
-    }
     return window.innerHeight
   }
 
   useEffect(() => {
     const updateScroll = () => {
       const scrollY = window.scrollY
-      const viewportHeight = getViewportHeight() // Considerando a altura da janela após a barra de pesquisa e abas
-      const height = document.documentElement.scrollHeight - viewportHeight
+      const height = document.documentElement.scrollHeight - getViewportHeight()
 
       setScrollPosition(scrollY)
       setDocumentHeight(height)
@@ -139,27 +135,33 @@ const Navigation = () => {
     }
 
     const onResize = () => {
-      // Quando a janela é redimensionada, recalculamos o scroll
+      // Recalcula a altura do documento e a rolagem quando a janela for redimensionada
       updateScroll()
     }
 
     window.addEventListener('scroll', updateScroll)
-    window.addEventListener('resize', onResize) // Ouvindo o evento de redimensionamento da janela
+    window.addEventListener('resize', onResize) // Recalcular a rolagem no resize da janela
 
-    // Ajuste inicial para garantir que o cálculo da rolagem esteja correto
+    // Chama a função de atualização inicial
     updateScroll()
+
+    // Define um intervalo para corrigir rolagem de forma mais robusta
+    const interval = setInterval(() => {
+      updateScroll()
+    }, 200) // Atualiza a cada 200ms para corrigir a rolagem conforme mudanças na tela
 
     return () => {
       window.removeEventListener('scroll', updateScroll)
-      window.removeEventListener('resize', onResize) // Removendo o ouvinte do resize
+      window.removeEventListener('resize', onResize)
+      clearInterval(interval) // Limpa o intervalo ao desmontar o componente
     }
   }, [])
 
   const scrollTo = (offset: number) => {
-    const viewportHeight = getViewportHeight()
     const targetPosition =
-      Math.round(window.scrollY / viewportHeight) * viewportHeight + offset + 1
-
+      Math.round(window.scrollY / getViewportHeight()) * getViewportHeight() +
+      offset +
+      1
     window.scrollTo({
       top: Math.max(0, Math.min(targetPosition, documentHeight)),
       behavior: 'smooth'
@@ -167,13 +169,11 @@ const Navigation = () => {
   }
 
   const scrollUp = () => {
-    const viewportHeight = getViewportHeight()
-    scrollTo(-viewportHeight)
+    scrollTo(-getViewportHeight())
   }
 
   const scrollDown = () => {
-    const viewportHeight = getViewportHeight()
-    scrollTo(viewportHeight)
+    scrollTo(getViewportHeight())
   }
 
   return (
