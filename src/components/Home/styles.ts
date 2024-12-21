@@ -13,7 +13,7 @@ export const Container = styled.main`
   .destaque-inicio {
     text-align: center;
     justify-content: center;
-    margin-top: 8vh;
+    margin-top: 1vh;
     display: flex;
     img {
       max-width: 558px;

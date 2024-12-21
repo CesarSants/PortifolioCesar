@@ -220,7 +220,7 @@ export const Head = styled.header`
   .chevron-up {
     display: block;
     position: fixed;
-    bottom: 55vh;
+    bottom: 50vh;
     left: 85vw;
     transform: translateX(-50%);
     transition: opacity 0.4s ease-out;
