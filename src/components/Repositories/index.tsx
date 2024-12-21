@@ -826,7 +826,7 @@ const Repositories = () => {
   const [sortOption, setSortOption] = useState<string>('alphabetical')
   const [searchQuery, setSearchQuery] = useState<string>('')
 
-  const GITHUB_TOKEN = process.env.REACT_APP_GITHUB_TOKEN
+  // const GITHUB_TOKEN = process.env.REACT_APP_GITHUB_TOKEN
 
   useEffect(() => {
     const fetchRepos = async () => {
@@ -838,9 +838,9 @@ const Repositories = () => {
       try {
         while (url) {
           const res: Response = await fetch(url, {
-            headers: {
-              Authorization: `token ${GITHUB_TOKEN}`
-            }
+            // headers: {
+            //   Authorization: `token ${GITHUB_TOKEN}`
+            // }
           })
 
           if (!res.ok) {
@@ -866,9 +866,9 @@ const Repositories = () => {
               const commitsRes: Response = await fetch(
                 `https://api.github.com/repos/CesarSants/${repo.name}/commits`,
                 {
-                  headers: {
-                    Authorization: `token ${GITHUB_TOKEN}`
-                  }
+                  // headers: {
+                  //   Authorization: `token ${GITHUB_TOKEN}`
+                  // }
                 }
               )
               const commitsJson = await commitsRes.json()

@@ -15,9 +15,13 @@ import github from '../../assets/tec/github.png'
 const Contact = () => {
   const [toastId, setToastId] = useState<string | number | null>(null)
 
-  const serviceId = process.env.REACT_APP_SERVICE_ID
-  const templateId = process.env.REACT_APP_TEMPLATE_ID
-  const publicKey = process.env.REACT_APP_PUBLIC_KEY
+  // const serviceId = process.env.REACT_APP_SERVICE_ID
+  // const templateId = process.env.REACT_APP_TEMPLATE_ID
+  // const publicKey = process.env.REACT_APP_PUBLIC_KEY
+
+  const serviceID = 'service_c0x45ul'
+  const templateID = 'template_ngkffsc'
+  const publicKey = 'p7pkklRRtvzCLRTil'
 
   const alertSuccess = () => {
     if (toastId === null) {
@@ -97,15 +101,8 @@ const Contact = () => {
       message: Yup.string().required('O campo é obrigatório')
     }),
     onSubmit: (values, { resetForm }) => {
-      if (!serviceId || !templateId || !publicKey) {
-        alertError(
-          'Erro: as variáveis de ambiente não estão configuradas corretamente.'
-        )
-        return
-      }
-
       emailjs
-        .send(serviceId, templateId, values, publicKey)
+        .send(serviceID, templateID, values, publicKey)
         .then(() => {
           alertSuccess()
           resetForm()
