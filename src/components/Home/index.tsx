@@ -2,6 +2,7 @@ import Particles from '../../utils/Particle'
 import topsombra from '../../assets/images/top-sombra-execao.png'
 import AnimatedText from '../../utils/AnimatedText'
 import { Container } from './styles'
+import { useEffect } from 'react'
 
 const Home = () => {
   return (

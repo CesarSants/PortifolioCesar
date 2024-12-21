@@ -14,6 +14,7 @@ import Repositories from './components/Repositories'
 import Navigation from './components/Navigation'
 import Contact from './components/Contact'
 import { BrowserRouter, BrowserRouter as Router } from 'react-router-dom'
+import ScrollOnLoad from './utils/ScrollOnLoad'
 
 const App = () => {
   useEffect(() => {
@@ -23,6 +24,7 @@ const App = () => {
   return (
     <Provider store={store}>
       <BrowserRouter>
+        <ScrollOnLoad />
         <GlobalCss />
         <Particles />
         <Header />
