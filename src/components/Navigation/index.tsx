@@ -117,12 +117,18 @@ const Navigation = () => {
   const [isAtTop, setIsAtTop] = useState(true)
   const [isAtBottom, setIsAtBottom] = useState(false)
 
+  // Função para calcular a altura da janela considerando a barra de abas e pesquisa
+  const getViewportHeight = () => {
+    if (window.visualViewport) {
+      return window.visualViewport.height
+    }
+    return window.innerHeight
+  }
+
   useEffect(() => {
     const updateScroll = () => {
       const scrollY = window.scrollY
-      const viewportHeight = window.visualViewport
-        ? window.visualViewport.height
-        : window.innerHeight
+      const viewportHeight = getViewportHeight() // Considerando a altura da janela após a barra de pesquisa e abas
       const height = document.documentElement.scrollHeight - viewportHeight
 
       setScrollPosition(scrollY)
@@ -132,18 +138,25 @@ const Navigation = () => {
       setIsAtBottom(Math.abs(scrollY - height) <= 6)
     }
 
+    const onResize = () => {
+      // Quando a janela é redimensionada, recalculamos o scroll
+      updateScroll()
+    }
+
     window.addEventListener('scroll', updateScroll)
+    window.addEventListener('resize', onResize) // Ouvindo o evento de redimensionamento da janela
 
     // Ajuste inicial para garantir que o cálculo da rolagem esteja correto
     updateScroll()
 
-    return () => window.removeEventListener('scroll', updateScroll)
+    return () => {
+      window.removeEventListener('scroll', updateScroll)
+      window.removeEventListener('resize', onResize) // Removendo o ouvinte do resize
+    }
   }, [])
 
   const scrollTo = (offset: number) => {
-    const viewportHeight = window.visualViewport
-      ? window.visualViewport.height
-      : window.innerHeight
+    const viewportHeight = getViewportHeight()
     const targetPosition =
       Math.round(window.scrollY / viewportHeight) * viewportHeight + offset + 1
 
@@ -154,16 +167,12 @@ const Navigation = () => {
   }
 
   const scrollUp = () => {
-    const viewportHeight = window.visualViewport
-      ? window.visualViewport.height
-      : window.innerHeight
+    const viewportHeight = getViewportHeight()
     scrollTo(-viewportHeight)
   }
 
   const scrollDown = () => {
-    const viewportHeight = window.visualViewport
-      ? window.visualViewport.height
-      : window.innerHeight
+    const viewportHeight = getViewportHeight()
     scrollTo(viewportHeight)
   }
 
