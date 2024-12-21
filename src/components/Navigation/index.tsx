@@ -7,39 +7,75 @@ const Navigation = () => {
   const [isAtTop, setIsAtTop] = useState(true)
   const [isAtBottom, setIsAtBottom] = useState(false)
 
-  useEffect(() => {
-    if (window.scrollY === 0) {
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      })
-    }
-  }, [])
+  // useEffect(() => {
+  //   const updateScroll = () => {
+  //     const scrollY = window.scrollY
+  //     const height = document.documentElement.scrollHeight - window.innerHeight
+
+  //     setScrollPosition(scrollY)
+  //     setDocumentHeight(height)
+
+  //     setIsAtTop(scrollY <= 6)
+  //     setIsAtBottom(Math.abs(scrollY - height) <= 6)
+  //   }
+
+  //   window.addEventListener('scroll', updateScroll)
+  //   updateScroll()
+
+  //   return () => window.removeEventListener('scroll', updateScroll)
+  // }, [])
+
+  // const scrollTo = (offset: number) => {
+  //   const targetPosition =
+  //     Math.round(window.scrollY / window.innerHeight) * window.innerHeight +
+  //     offset +
+  //     1
+
+  // //     const targetPosition =
+  // // Math.round(window.scrollY / window.visualViewport.height) *
+  // //   window.visualViewport.height +
+  // // offset
+
+  //   window.scrollTo({
+  //     top: Math.max(0, Math.min(targetPosition, documentHeight)),
+  //     behavior: 'smooth'
+  //   })
+  // }
+
+  // const scrollUp = () => scrollTo(-window.innerHeight)
+  // const scrollDown = () => scrollTo(window.innerHeight)
+  const updateScroll = () => {
+    const scrollY = window.scrollY
+    const height = document.documentElement.scrollHeight - window.innerHeight
+
+    setScrollPosition(scrollY)
+    setDocumentHeight(height)
+
+    setIsAtTop(scrollY <= 6)
+    setIsAtBottom(Math.abs(scrollY - height) <= 6)
+  }
 
   useEffect(() => {
-    const updateScroll = () => {
-      const scrollY = window.scrollY
-      const height = document.documentElement.scrollHeight - window.innerHeight
-
-      setScrollPosition(scrollY)
-      setDocumentHeight(height)
-
-      setIsAtTop(scrollY <= 6)
-      setIsAtBottom(Math.abs(scrollY - height) <= 6)
-    }
-
     window.addEventListener('scroll', updateScroll)
     updateScroll()
 
-    return () => window.removeEventListener('scroll', updateScroll)
+    // Listen for window resize to update documentHeight dynamically
+    window.addEventListener('resize', updateScroll)
+
+    return () => {
+      window.removeEventListener('scroll', updateScroll)
+      window.removeEventListener('resize', updateScroll)
+    }
   }, [])
 
   const scrollTo = (offset: number) => {
+    // Adjust the calculation of targetPosition for mobile
     const targetPosition =
       Math.round(window.scrollY / window.innerHeight) * window.innerHeight +
       offset +
       1
 
+    // Ensure targetPosition does not go beyond the document height
     window.scrollTo({
       top: Math.max(0, Math.min(targetPosition, documentHeight)),
       behavior: 'smooth'
