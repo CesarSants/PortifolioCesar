@@ -15,8 +15,8 @@ const Navigation = () => {
       setScrollPosition(scrollY)
       setDocumentHeight(height)
 
-      setIsAtTop(scrollY <= 6)
-      setIsAtBottom(Math.abs(scrollY - height) <= 6)
+      setIsAtTop(scrollY <= 0)
+      setIsAtBottom(Math.abs(scrollY - height) <= 0)
     }
 
     window.addEventListener('scroll', updateScroll)
@@ -29,7 +29,7 @@ const Navigation = () => {
     const targetPosition =
       Math.round(window.scrollY / window.innerHeight) * window.innerHeight +
       offset +
-      1
+      -2
     window.scrollTo({
       top: Math.max(0, Math.min(targetPosition, documentHeight)),
       behavior: 'smooth'
