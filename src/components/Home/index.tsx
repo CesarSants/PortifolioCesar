@@ -33,9 +33,6 @@ const Home = () => {
           </div>
           <a
             className="cta"
-            data-aos="fade-up"
-            data-aos-delay="400"
-            data-aos-duration="1000"
             href="https://wa.me/5519988481818"
             target="_blank"
             rel="noreferrer"
