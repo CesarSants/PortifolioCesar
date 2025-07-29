@@ -51,66 +51,69 @@ const About = () => {
       <div className="background">
         <img src={fundo} alt="" />
       </div>
-      <div className="cont">
-        <HeadlineScroll content="sobre" height="15%" />
-      </div>
-      <div
-        className="aboutContainer"
-        data-aos="fade-up"
-        data-aos-duration="1000"
-        data-aos-delay="300"
-      >
-        <div
-          className="resume"
-          data-aos="fade-right"
-          data-aos-duration="2000"
-          data-aos-delay="300"
-        >
-          <div className="backgroundResume">
-            <img src={fundoAbout} alt="" />
-          </div>
-          <div className="textContainer">
-            <p className="textResume">
-              Seja bem vindo(a) ao meu Portifólio! Me chamo Cesar, muito prazer!
-              <br />
-              Sou um profissional em transição de carreira para a área de
-              tecnologia. Desenvolvedor full-stack Java em formação pela EBAC –
-              Escola Britânica de Artes Criativas e Tecnologia.
-              <br />
-              <br />
-              Tenho um perfil organizado e meticuloso, gosto de que as coisas
-              sejam feitas da maneira certa, sem atalhos. Sou determinado e foco
-              em atingir meus objetivos. Acredito que o respeito é fundamental
-              para uma boa convivência no ambiente de trabalho e sempre busco
-              manter boas relações com todos. Sou também muito comunicativo e me
-              adapto facilmente a novos grupos, fazendo amizades rapidamente.
-              <br />
-              <br />
-              Em termos de experiências e realizações, tive a oportunidade de
-              viver um intercâmbio de um ano na Austrália, onde aprendi inglês e
-              adquiri uma vivência internacional valiosa. Ao retornar ao Brasil,
-              assumi a responsabilidade do setor financeiro de uma empresa, o
-              que me proporcionou grandes aprendizados sobre gestão financeira e
-              liderança de equipe.
-            </p>
-          </div>
+      <div className="container1">
+        <div className="cont">
+          <HeadlineScroll content="sobre" height="15%" />
         </div>
         <div
-          className="complemento-sobre"
-          data-aos="fade-left"
-          data-aos-duration="2000"
+          className="aboutContainer"
+          data-aos="fade-up"
+          data-aos-duration="1000"
           data-aos-delay="300"
         >
-          <div className="container-svg">
-            <svg width="600" height="600" viewBox="0 0 300 300">
-              <defs>
-                <path
-                  id="text-circle"
-                  d="M 150,150 m -100,0 a 100,100 0 1,1 200,0 a 100,100 0 1,1 -200,0"
-                />
-              </defs>
-              <style>
-                {`
+          <div
+            className="resume"
+            data-aos="fade-right"
+            data-aos-duration="2000"
+            data-aos-delay="300"
+          >
+            <div className="backgroundResume">
+              <img src={fundoAbout} alt="" />
+            </div>
+            <div className="textContainer">
+              <p>
+                Seja bem vindo(a) ao meu Portifólio! Me chamo Cesar, muito
+                prazer!
+                <br />
+                Sou um profissional em transição de carreira para a área de
+                tecnologia. Desenvolvedor full-stack Java em formação pela EBAC
+                – Escola Britânica de Artes Criativas e Tecnologia.
+                <br />
+                <br />
+                Tenho um perfil organizado e meticuloso, gosto de que as coisas
+                sejam feitas da maneira certa, sem atalhos. Sou determinado e
+                foco em atingir meus objetivos. Acredito que o respeito é
+                fundamental para uma boa convivência no ambiente de trabalho e
+                sempre busco manter boas relações com todos. Sou também muito
+                comunicativo e me adapto facilmente a novos grupos, fazendo
+                amizades rapidamente.
+                <br />
+                <br />
+                Em termos de experiências e realizações, tive a oportunidade de
+                viver um intercâmbio de um ano na Austrália, onde aprendi inglês
+                e adquiri uma vivência internacional valiosa. Ao retornar ao
+                Brasil, assumi a responsabilidade do setor financeiro de uma
+                empresa, o que me proporcionou grandes aprendizados sobre gestão
+                financeira e liderança de equipe.
+              </p>
+            </div>
+          </div>
+          <div
+            className="complemento-sobre"
+            data-aos="fade-left"
+            data-aos-duration="2000"
+            data-aos-delay="300"
+          >
+            <div className="container-svg">
+              <svg width="600" height="600" viewBox="0 0 300 300">
+                <defs>
+                  <path
+                    id="text-circle"
+                    d="M 150,150 m -100,0 a 100,100 0 1,1 200,0 a 100,100 0 1,1 -200,0"
+                  />
+                </defs>
+                <style>
+                  {`
           @import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@100;200;300;400;500;600;700&display=swap');
 
           .work-sans-font {
@@ -118,32 +121,34 @@ const About = () => {
             font-weight: bold
           }
         `}
-              </style>
-              <text
-                fill="#c4acf0"
-                fontSize="29"
-                className="work-sans-font"
-                textAnchor="middle"
-              >
-                <textPath href="#text-circle" startOffset="50%">
-                  Front-End ✧—·—✧ Web Developer ✧—·—✧
-                </textPath>
-              </text>
-              <circle
-                cx="150"
-                cy="150"
-                r="100"
-                fill="none"
-                stroke="transparent"
-                strokeWidth="2"
-              />
-            </svg>
-          </div>
-          <div className="svg-image">
-            <img src={face} alt="" />
+                </style>
+                <text
+                  fill="#c4acf0"
+                  fontSize="29"
+                  className="work-sans-font"
+                  textAnchor="middle"
+                >
+                  <textPath href="#text-circle" startOffset="50%">
+                    Front-End ✧—·—✧ Web Developer ✧—·—✧
+                  </textPath>
+                </text>
+                <circle
+                  cx="150"
+                  cy="150"
+                  r="100"
+                  fill="none"
+                  stroke="transparent"
+                  strokeWidth="2"
+                />
+              </svg>
+            </div>
+            <div className="svg-image">
+              <img src={face} alt="" />
+            </div>
           </div>
         </div>
       </div>
+      <div id="resume2" />
       <div className="container2">
         <h3 data-aos="fade-up" data-aos-duration="2000" data-aos-delay="300">
           Habilidades
@@ -164,7 +169,7 @@ const About = () => {
               <img src={fundoAbout} alt="" />
             </div>
             <div className="textContainer">
-              <p className="textResume">
+              <p>
                 Sou desenvolvedor Full Stack com proficiência em front-end
                 utilizando JavaScript, HTML, CSS, jQuery, Bootstrap, SASS e
                 LESS, Gulp, Grunt, requisições de API Ajax e Fetch; TypeScript,

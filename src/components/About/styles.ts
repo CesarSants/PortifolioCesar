@@ -41,9 +41,11 @@ import fundo from '../../assets/backGrounds/roxo-6.jpg'
 
 export const Container = styled.div`
   height: 200vh;
-  overflow: hidden;
   position: relative;
   opacity: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
 
   .background,
   .backgroundResume {
@@ -103,13 +105,30 @@ export const Container = styled.div`
     pointer-events: none;
   }
 
+  .container1 {
+    min-height: 100vh;
+    max-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .container2 {
+    min-height: 100vh;
+    max-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
   .aboutContainer {
-    height: 100vh;
+    flex: 1;
     display: flex;
     justify-content: space-between;
     align-items: center;
     max-width: 1024px;
-    margin: 35px auto 0;
+    width: 100%;
+    height: 100%;
+    max-height: 100vh;
+    margin: 0 auto;
   }
 
   @media (max-width: 1024px) {
@@ -124,22 +143,23 @@ export const Container = styled.div`
     line-height: 20px;
     font-family: ${fonts.fontPequena};
     font-size: 19px;
-    margin-top: 100px;
     position: relative;
     z-index: 0;
     border-radius: 40px;
-    max-height: 76vh;
-    height: 76vh;
-
+    max-height: 70vh;
+    height: 70vh;
+    margin-top: 16vh;
     p {
-      padding: 20px;
+      padding: 0 20px;
     }
 
     .textContainer {
       position: relative;
       max-height: 100%;
       overflow-y: auto;
+      margin-top: 20px;
       /* padding: 20px; */
+      height: calc(100% - 40px);
       scrollbar-width: thin;
       scrollbar-color: rgba(100, 100, 100, 0.6) transparent;
 
@@ -298,19 +318,23 @@ export const Container = styled.div`
   }
 
   .aboutContainer2 {
-    margin-top: 0;
+    flex: 1;
+    display: flex;
     align-items: center;
     justify-content: center;
-    margin-top: -120px;
+    max-width: 1024px;
+    max-height: 100%;
+    margin: 0 auto;
+    margin-top: -140px;
   }
 
+  .container1,
   .container2 {
-    padding-top: 15px;
-
     h3 {
       text-align: center;
       font-size: 60px;
       font-family: ${fonts.fontGrande};
+      padding: 50px 0 0 0;
 
       @media (max-width: 400px) {
         font-size: 48px;

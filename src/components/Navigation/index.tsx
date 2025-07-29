@@ -1,117 +1,129 @@
 import React, { useEffect, useState, useCallback } from 'react'
 import { NavigationContainer, NavigationButton } from './styles'
 
-const Navigation = () => {
-  const [documentHeight, setDocumentHeight] = useState(0)
-  const [isAtTop, setIsAtTop] = useState(true)
-  const [isAtBottom, setIsAtBottom] = useState(false)
+// IDs das seções na ordem em que aparecem na página
+const SECTION_IDS = [
+  'inicio', // Home
+  'sobre', // About - página 1
+  'resume2', // About - página 2
+  'projetos', // Projects
+  'repositorios', // Repositories
+  'contact' // Contact
+]
 
-  // Função simples para obter a altura real do viewport
-  const getViewportHeight = useCallback(() => {
-    // Usa visualViewport que funciona para todos os dispositivos
-    if (window.visualViewport && window.visualViewport.height > 0) {
-      return window.visualViewport.height
+const Navigation = () => {
+  const [currentSection, setCurrentSection] = useState(0)
+
+  // Detecta qual seção está mais centralizada na tela
+  const detectCurrentSection = useCallback(() => {
+    const viewportHeight = window.visualViewport?.height || window.innerHeight
+    const currentScroll = window.scrollY
+    const tolerance = viewportHeight * 0.1 // 10% da altura da viewport como tolerância
+
+    // Função auxiliar para verificar se um scroll está próximo de uma posição
+    const isNearPosition = (scroll: number, position: number) => {
+      return Math.abs(scroll - position) < tolerance
     }
 
-    // Fallback para navegadores antigos
-    return window.innerHeight
+    // Mapeia as posições esperadas de cada seção
+    const sectionPositions = SECTION_IDS.map((id) => {
+      const el = document.getElementById(id)
+      return el ? el.offsetTop : 0
+    })
+
+    // Encontra a seção atual baseado na posição do scroll
+    for (let i = 0; i < sectionPositions.length; i++) {
+      const currentPosition = sectionPositions[i]
+
+      // Para a segunda página do About, usamos uma posição especial
+      if (i === 2) {
+        // índice do 'resume2'
+        const aboutStartEl = document.getElementById('sobre')
+        if (aboutStartEl) {
+          const secondPagePosition = aboutStartEl.offsetTop + viewportHeight
+          if (isNearPosition(currentScroll, secondPagePosition)) {
+            setCurrentSection(i)
+            return
+          }
+        }
+      } else {
+        // Para todas as outras seções
+        if (isNearPosition(currentScroll, currentPosition)) {
+          setCurrentSection(i)
+          return
+        }
+      }
+    }
   }, [])
 
-  const updateScroll = useCallback(() => {
-    const scrollY = window.scrollY
-    const currentViewportHeight = getViewportHeight()
-    const height = document.documentElement.scrollHeight - currentViewportHeight
-
-    setDocumentHeight(height)
-
-    setIsAtTop(scrollY <= 6)
-    setIsAtBottom(Math.abs(scrollY - height) <= 6)
-  }, [getViewportHeight])
-
   useEffect(() => {
-    const onResize = () => {
-      updateScroll()
-    }
-
-    const onVisualViewportChange = () => {
-      updateScroll()
-    }
-
-    const onScroll = () => {
-      updateScroll()
-    }
-
-    // Atualização inicial
-    updateScroll()
-
-    // Event listeners
-    window.addEventListener('scroll', onScroll, { passive: true })
-    window.addEventListener('resize', onResize)
-
-    // Listener para visualViewport
+    detectCurrentSection()
+    window.addEventListener('scroll', detectCurrentSection, { passive: true })
+    window.addEventListener('resize', detectCurrentSection)
     if (window.visualViewport) {
-      window.visualViewport.addEventListener('resize', onVisualViewportChange)
-      window.visualViewport.addEventListener('scroll', onVisualViewportChange)
+      window.visualViewport.addEventListener('resize', detectCurrentSection)
+      window.visualViewport.addEventListener('scroll', detectCurrentSection)
     }
-
-    // Intervalo para garantir precisão
-    const intervalId = setInterval(updateScroll, 1000)
-
     return () => {
-      clearInterval(intervalId)
-      window.removeEventListener('scroll', onScroll)
-      window.removeEventListener('resize', onResize)
-
+      window.removeEventListener('scroll', detectCurrentSection)
+      window.removeEventListener('resize', detectCurrentSection)
       if (window.visualViewport) {
         window.visualViewport.removeEventListener(
           'resize',
-          onVisualViewportChange
+          detectCurrentSection
         )
         window.visualViewport.removeEventListener(
           'scroll',
-          onVisualViewportChange
+          detectCurrentSection
         )
       }
     }
-  }, [updateScroll])
+  }, [detectCurrentSection])
 
-  const scrollTo = useCallback(
-    (offset: number) => {
-      const currentViewportHeight = getViewportHeight()
+  const scrollToSection = useCallback((idx: number) => {
+    const viewportHeight = window.visualViewport?.height || window.innerHeight
+    const id = SECTION_IDS[idx]
+    const el = document.getElementById(id)
 
-      // Calcula a posição atual baseada na altura real do viewport
-      const currentSection = Math.round(window.scrollY / currentViewportHeight)
+    if (el) {
+      let targetPosition = el.offsetTop
 
-      // Calcula a posição alvo
-      const targetPosition =
-        currentSection * currentViewportHeight + offset + 10
+      // Ajuste especial para a segunda página do About
+      if (id === 'resume2') {
+        const aboutStartEl = document.getElementById('sobre')
+        if (aboutStartEl) {
+          targetPosition = aboutStartEl.offsetTop + viewportHeight
+        }
+      }
 
+      // Aplica o scroll com uma pequena compensação para garantir o alinhamento
       window.scrollTo({
-        top: Math.max(0, Math.min(targetPosition, documentHeight)),
+        top: targetPosition,
         behavior: 'smooth'
       })
-    },
-    [documentHeight, getViewportHeight]
-  )
+    }
+  }, [])
 
   const scrollUp = useCallback(() => {
-    const currentViewportHeight = getViewportHeight()
-    scrollTo(-currentViewportHeight)
-  }, [scrollTo, getViewportHeight])
+    if (currentSection > 0) {
+      scrollToSection(currentSection - 1)
+    }
+  }, [currentSection, scrollToSection])
 
   const scrollDown = useCallback(() => {
-    const currentViewportHeight = getViewportHeight()
-    scrollTo(currentViewportHeight)
-  }, [scrollTo, getViewportHeight])
+    if (currentSection < SECTION_IDS.length - 1) {
+      scrollToSection(currentSection + 1)
+    }
+  }, [currentSection, scrollToSection])
 
   return (
     <NavigationContainer>
-      {!isAtTop && (
+      {currentSection > 0 && (
         <NavigationButton onClick={scrollUp} data-direction="up">
           ↑
         </NavigationButton>
       )}
-      {!isAtBottom && (
+      {currentSection < SECTION_IDS.length - 1 && (
         <NavigationButton onClick={scrollDown} data-direction="down">
           ↓
         </NavigationButton>
