@@ -193,3 +193,29 @@ declare type Projeto = {
 // }
 
 // export default Projects
+
+// Definições para visualViewport API
+interface VisualViewport extends EventTarget {
+  readonly height: number
+  readonly width: number
+  readonly scale: number
+  readonly offsetLeft: number
+  readonly offsetTop: number
+  readonly pageLeft: number
+  readonly pageTop: number
+  onresize: ((this: VisualViewport, ev: Event) => any) | null
+  onscroll: ((this: VisualViewport, ev: Event) => any) | null
+}
+
+interface Window {
+  visualViewport: VisualViewport | null
+}
+
+// Definições para CSS.supports
+interface CSS {
+  supports(property: string, value?: string): boolean
+}
+
+declare global {
+  const CSS: CSS
+}

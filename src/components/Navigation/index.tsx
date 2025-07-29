@@ -1,114 +1,4 @@
-// import React, { useEffect, useState } from 'react'
-// import { NavigationContainer, NavigationButton } from './styles'
-
-// const Navigation = () => {
-//   const [scrollPosition, setScrollPosition] = useState(0)
-//   const [documentHeight, setDocumentHeight] = useState(0)
-//   const [isAtTop, setIsAtTop] = useState(true)
-//   const [isAtBottom, setIsAtBottom] = useState(false)
-
-//   useEffect(() => {
-//     const updateScroll = () => {
-//       const scrollY = window.scrollY
-//       const height = document.documentElement.scrollHeight - window.innerHeight
-
-//       setScrollPosition(scrollY)
-//       setDocumentHeight(height)
-
-//       setIsAtTop(scrollY <= 6)
-//       setIsAtBottom(Math.abs(scrollY - height) <= 6)
-//     }
-
-//     window.addEventListener('scroll', updateScroll)
-//     updateScroll()
-
-//     return () => window.removeEventListener('scroll', updateScroll)
-//   }, [])
-
-//   const scrollTo = (offset: number) => {
-//     const targetPosition =
-//       Math.round(window.scrollY / window.innerHeight) * window.innerHeight +
-//       offset +
-//       1
-
-//     //     const targetPosition =
-//     // Math.round(window.scrollY / window.visualViewport.height) *
-//     //   window.visualViewport.height +
-//     // offset
-
-//     window.scrollTo({
-//       top: Math.max(0, Math.min(targetPosition, documentHeight)),
-//       behavior: 'smooth'
-//     })
-//   }
-
-//   const scrollUp = () => scrollTo(-window.innerHeight)
-//   const scrollDown = () => scrollTo(window.innerHeight)
-
-//   ///////////////////////////////////////////////////////////////////////////////////////////////
-
-//   // const updateScroll = () => {
-//   //   const scrollY = window.scrollY
-//   //   const height = document.documentElement.scrollHeight - window.innerHeight
-
-//   //   setScrollPosition(scrollY)
-//   //   setDocumentHeight(height)
-
-//   //   setIsAtTop(scrollY <= 6)
-//   //   setIsAtBottom(Math.abs(scrollY - height) <= 6)
-//   // }
-
-//   // useEffect(() => {
-//   //   window.addEventListener('scroll', updateScroll)
-//   //   updateScroll()
-
-//   //   // Listen for window resize to update documentHeight dynamically
-//   //   window.addEventListener('resize', updateScroll)
-
-//   //   return () => {
-//   //     window.removeEventListener('scroll', updateScroll)
-//   //     window.removeEventListener('resize', updateScroll)
-//   //   }
-//   // }, [])
-
-//   // const scrollTo = (offset: number) => {
-//   //   // Adjust the calculation of targetPosition for mobile
-//   //   const targetPosition =
-//   //     Math.round(window.scrollY / window.innerHeight) * window.innerHeight +
-//   //     offset +
-//   //     1
-
-//   //   // Ensure targetPosition does not go beyond the document height
-//   //   window.scrollTo({
-//   //     top: Math.max(0, Math.min(targetPosition, documentHeight)),
-//   //     behavior: 'smooth'
-//   //   })
-//   // }
-
-//   // const scrollUp = () => scrollTo(-window.innerHeight)
-//   // const scrollDown = () => scrollTo(window.innerHeight)
-
-//   //////////////////////////////////////////////////////////////////////////////////////////////
-
-//   return (
-//     <NavigationContainer>
-//       {!isAtTop && (
-//         <NavigationButton onClick={scrollUp} data-direction="up">
-//           ↑
-//         </NavigationButton>
-//       )}
-//       {!isAtBottom && (
-//         <NavigationButton onClick={scrollDown} data-direction="down">
-//           ↓
-//         </NavigationButton>
-//       )}
-//     </NavigationContainer>
-//   )
-// }
-
-// export default Navigation
-
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import { NavigationContainer, NavigationButton } from './styles'
 
 const Navigation = () => {
@@ -116,82 +6,147 @@ const Navigation = () => {
   const [documentHeight, setDocumentHeight] = useState(0)
   const [isAtTop, setIsAtTop] = useState(true)
   const [isAtBottom, setIsAtBottom] = useState(false)
+  const [viewportHeight, setViewportHeight] = useState(0)
 
-  // Função para obter a altura do visualViewport (para dispositivos móveis)
-  const getViewportHeight = () => {
-    // Verifica se visualViewport está disponível
-    return window.visualViewport
-      ? window.visualViewport.height
-      : window.innerHeight
-  }
-
-  useEffect(() => {
-    const updateScroll = () => {
-      const scrollY = window.scrollY
-      const height = document.documentElement.scrollHeight - getViewportHeight()
-
-      setScrollPosition(scrollY)
-      setDocumentHeight(height)
-
-      setIsAtTop(scrollY <= 6)
-      setIsAtBottom(Math.abs(scrollY - height) <= 6)
+  // Função para obter a altura real do viewport considerando dispositivos móveis
+  const getViewportHeight = useCallback(() => {
+    // Prioriza visualViewport se disponível (melhor para dispositivos móveis)
+    if (window.visualViewport) {
+      return window.visualViewport.height
     }
 
+    // Fallback para navegadores que não suportam visualViewport
+    return window.innerHeight
+  }, [])
+
+  // Função para detectar se é um dispositivo móvel
+  const isMobileDevice = useCallback(() => {
+    return (
+      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+        navigator.userAgent
+      ) || window.innerWidth <= 768
+    )
+  }, [])
+
+  // Função para obter a altura do viewport usando dvh se disponível
+  const getDvhHeight = useCallback(() => {
+    if (typeof window !== 'undefined' && CSS.supports('height', '100dvh')) {
+      // Cria um elemento temporário para medir 100dvh
+      const tempElement = document.createElement('div')
+      tempElement.style.height = '100dvh'
+      tempElement.style.position = 'absolute'
+      tempElement.style.visibility = 'hidden'
+      tempElement.style.pointerEvents = 'none'
+      document.body.appendChild(tempElement)
+
+      const dvhHeight = tempElement.offsetHeight
+      document.body.removeChild(tempElement)
+
+      return dvhHeight
+    }
+
+    return getViewportHeight()
+  }, [getViewportHeight])
+
+  const updateScroll = useCallback(() => {
+    const scrollY = window.scrollY
+    const currentViewportHeight = isMobileDevice()
+      ? getDvhHeight()
+      : getViewportHeight()
+    const height = document.documentElement.scrollHeight - currentViewportHeight
+
+    setScrollPosition(scrollY)
+    setDocumentHeight(height)
+    setViewportHeight(currentViewportHeight)
+
+    setIsAtTop(scrollY <= 6)
+    setIsAtBottom(Math.abs(scrollY - height) <= 6)
+  }, [getViewportHeight, getDvhHeight, isMobileDevice])
+
+  useEffect(() => {
     const onResize = () => {
-      // Atualiza a rolagem quando a janela for redimensionada
-      updateScroll()
+      // Pequeno delay para garantir que as mudanças do viewport foram aplicadas
+      setTimeout(updateScroll, 100)
     }
 
     const onVisualViewportChange = () => {
-      // Recalcula a altura quando o visualViewport mudar
+      // Recalcula imediatamente quando o visualViewport mudar
       updateScroll()
     }
 
-    // Atualizar a rolagem com um intervalo para garantir que sempre esteja correto
-    const intervalId = setInterval(updateScroll, 500) // Atualiza a cada 500ms
-
-    window.addEventListener('scroll', updateScroll)
-    window.addEventListener('resize', onResize)
-
-    // Verifica mudanças no visualViewport (no caso de dispositivos móveis)
-    if (window.visualViewport) {
-      window.visualViewport.addEventListener('resize', onVisualViewportChange)
+    const onScroll = () => {
+      updateScroll()
     }
 
-    // Chama a função de atualização inicial
+    // Atualização inicial
     updateScroll()
 
+    // Event listeners
+    window.addEventListener('scroll', onScroll)
+    window.addEventListener('resize', onResize)
+
+    // Listener específico para visualViewport (dispositivos móveis)
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', onVisualViewportChange)
+      window.visualViewport.addEventListener('scroll', onVisualViewportChange)
+    }
+
+    // Intervalo para garantir que as medições estejam sempre corretas
+    const intervalId = setInterval(updateScroll, 1000)
+
     return () => {
-      clearInterval(intervalId) // Limpa o intervalo ao desmontar o componente
-      window.removeEventListener('scroll', updateScroll)
+      clearInterval(intervalId)
+      window.removeEventListener('scroll', onScroll)
       window.removeEventListener('resize', onResize)
+
       if (window.visualViewport) {
         window.visualViewport.removeEventListener(
           'resize',
           onVisualViewportChange
         )
+        window.visualViewport.removeEventListener(
+          'scroll',
+          onVisualViewportChange
+        )
       }
     }
-  }, [])
+  }, [updateScroll])
 
-  const scrollTo = (offset: number) => {
-    const targetPosition =
-      Math.round(window.scrollY / getViewportHeight()) * getViewportHeight() +
-      offset +
-      1
-    window.scrollTo({
-      top: Math.max(0, Math.min(targetPosition, documentHeight)),
-      behavior: 'smooth'
-    })
-  }
+  const scrollTo = useCallback(
+    (offset: number) => {
+      const currentViewportHeight = isMobileDevice()
+        ? getDvhHeight()
+        : getViewportHeight()
 
-  const scrollUp = () => {
-    scrollTo(-getViewportHeight())
-  }
+      // Calcula a posição atual em relação ao viewport
+      const currentSection = Math.round(window.scrollY / currentViewportHeight)
 
-  const scrollDown = () => {
-    scrollTo(getViewportHeight())
-  }
+      // Calcula a posição alvo com margem de erro
+      const marginError = 1 // pixels de margem para garantir que desça um pouco mais
+      const targetPosition =
+        currentSection * currentViewportHeight + offset + marginError
+
+      window.scrollTo({
+        top: Math.max(0, Math.min(targetPosition, documentHeight)),
+        behavior: 'smooth'
+      })
+    },
+    [documentHeight, getViewportHeight, getDvhHeight, isMobileDevice]
+  )
+
+  const scrollUp = useCallback(() => {
+    const currentViewportHeight = isMobileDevice()
+      ? getDvhHeight()
+      : getViewportHeight()
+    scrollTo(-currentViewportHeight)
+  }, [scrollTo, getViewportHeight, getDvhHeight, isMobileDevice])
+
+  const scrollDown = useCallback(() => {
+    const currentViewportHeight = isMobileDevice()
+      ? getDvhHeight()
+      : getViewportHeight()
+    scrollTo(currentViewportHeight)
+  }, [scrollTo, getViewportHeight, getDvhHeight, isMobileDevice])
 
   return (
     <NavigationContainer>

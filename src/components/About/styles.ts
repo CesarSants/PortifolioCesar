@@ -128,7 +128,6 @@ export const Container = styled.div`
     position: relative;
     z-index: 0;
     border-radius: 40px;
-
     max-height: 76vh;
     height: 76vh;
 

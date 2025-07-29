@@ -70,19 +70,21 @@ const About = () => {
             <img src={fundoAbout} alt="" />
           </div>
           <div className="textContainer">
-            <p>
+            <p className="textResume">
               Seja bem vindo(a) ao meu Portifólio! Me chamo Cesar, muito prazer!
               <br />
               Sou um profissional em transição de carreira para a área de
               tecnologia. Desenvolvedor full-stack Java em formação pela EBAC –
               Escola Britânica de Artes Criativas e Tecnologia.
-              <br /> Tenho um perfil organizado e meticuloso, gosto de que as
-              coisas sejam feitas da maneira certa, sem atalhos. Sou determinado
-              e foco em atingir meus objetivos. Acredito que o respeito é
-              fundamental para uma boa convivência no ambiente de trabalho e
-              sempre busco manter boas relações com todos. Sou também muito
-              comunicativo e me adapto facilmente a novos grupos, fazendo
-              amizades rapidamente.
+              <br />
+              <br />
+              Tenho um perfil organizado e meticuloso, gosto de que as coisas
+              sejam feitas da maneira certa, sem atalhos. Sou determinado e foco
+              em atingir meus objetivos. Acredito que o respeito é fundamental
+              para uma boa convivência no ambiente de trabalho e sempre busco
+              manter boas relações com todos. Sou também muito comunicativo e me
+              adapto facilmente a novos grupos, fazendo amizades rapidamente.
+              <br />
               <br />
               Em termos de experiências e realizações, tive a oportunidade de
               viver um intercâmbio de um ano na Austrália, onde aprendi inglês e
@@ -162,24 +164,38 @@ const About = () => {
               <img src={fundoAbout} alt="" />
             </div>
             <div className="textContainer">
-              <p>
-                Tenho proficiência em JavaScript, HTML, CSS, jQuery, Bootstrap,
-                SASS e LESS, Gulp, Grunt, requisições de API Ajax e Fetch;
-                TypeScript, VueJs, React, Redux, Next.js; testing com React
-                Testing Library e Cypress. <br />
-                Habilidade em manipulação do DOM e implementação de interações
-                dinâmicas de usuário. Desenvolvimento de interfaces web
-                visualmente atraentes e responsivas, utilizando componentes
-                interativos. <br />
-                Agora, estou migrando para a área de tecnologia e já trabalhei
-                em projetos de criação de sites e sistemas, utilizando
-                principalmente JavaScript, TypeScript, Vue.js e React no front
-                end. Cada um desses projetos me desafiou a aplicar novos
-                conhecimentos e me proporcionou grande satisfação em ver minhas
-                soluções funcionando na prática.
+              <p className="textResume">
+                Sou desenvolvedor Full Stack com proficiência em front-end
+                utilizando JavaScript, HTML, CSS, jQuery, Bootstrap, SASS e
+                LESS, Gulp, Grunt, requisições de API Ajax e Fetch; TypeScript,
+                Vue.js, React, Redux, Next.js; testing com React Testing Library
+                e Cypress.
+                <br />
+                <br />
+                No back-end, trabalho com Java, Spring Boot, Hibernate, JSP e
+                PrimeFaces, utilizando ferramentas como Maven e Gradle para
+                build. Tenho experiência com servidores de aplicação como
+                Tomcat, JBoss/WildFly e Payara.
+                <br />
+                <br />
+                Para infraestrutura e deploy, utilizo Docker para empacotamento
+                de projetos e otimização de serviços com imagens prontas.
+                Realizo deploy em máquinas virtuais na AWS e Oracle Cloud, com
+                automação via Terraform e orquestração usando Kubernetes.
+                <br />
+                <br />
+                Desenvolvo interfaces web responsivas e sistemas completos,
+                desde a criação de componentes interativos no front-end até APIs
+                robustas e integração com banco de dados no back-end.
+                <br />
+                <br />
+                Cada projeto me desafia a aplicar novos conhecimentos em ambas
+                as frentes de desenvolvimento, proporcionando grande satisfação
+                em ver soluções completas funcionando na prática.
+                <br />
                 <br />
                 Estou sempre em busca de novos desafios e oportunidades para
-                continuar crescendo na área de tecnologia.
+                continuar crescendo como desenvolvedor Full Stack.
               </p>
             </div>
           </div>
