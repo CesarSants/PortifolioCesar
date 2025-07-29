@@ -6,16 +6,15 @@ const Navigation = () => {
   const [isAtTop, setIsAtTop] = useState(true)
   const [isAtBottom, setIsAtBottom] = useState(false)
 
-  // Função para obter a altura real do viewport usando visualViewport
+  // Função simples para obter a altura real do viewport
   const getViewportHeight = useCallback(() => {
-    // Usa apenas visualViewport para testar se está funcionando
+    // Usa visualViewport que funciona para todos os dispositivos
     if (window.visualViewport && window.visualViewport.height > 0) {
       return window.visualViewport.height
     }
 
-    // Se visualViewport não estiver disponível, retorna 0 para forçar erro
-    console.warn('visualViewport não está disponível')
-    return 0
+    // Fallback para navegadores antigos
+    return window.innerHeight
   }, [])
 
   const updateScroll = useCallback(() => {
@@ -35,7 +34,6 @@ const Navigation = () => {
     }
 
     const onVisualViewportChange = () => {
-      // Recalcula imediatamente quando o visualViewport mudar
       updateScroll()
     }
 
@@ -50,13 +48,13 @@ const Navigation = () => {
     window.addEventListener('scroll', onScroll, { passive: true })
     window.addEventListener('resize', onResize)
 
-    // Listener específico para visualViewport
+    // Listener para visualViewport
     if (window.visualViewport) {
       window.visualViewport.addEventListener('resize', onVisualViewportChange)
       window.visualViewport.addEventListener('scroll', onVisualViewportChange)
     }
 
-    // Intervalo para garantir que as medições estejam sempre corretas
+    // Intervalo para garantir precisão
     const intervalId = setInterval(updateScroll, 1000)
 
     return () => {
@@ -81,13 +79,12 @@ const Navigation = () => {
     (offset: number) => {
       const currentViewportHeight = getViewportHeight()
 
-      // Calcula a posição atual em relação ao viewport
+      // Calcula a posição atual baseada na altura real do viewport
       const currentSection = Math.round(window.scrollY / currentViewportHeight)
 
-      // Calcula a posição alvo com margem de erro
-      const marginError = 1 // pixels de margem para garantir que desça um pouco mais
+      // Calcula a posição alvo
       const targetPosition =
-        currentSection * currentViewportHeight + offset + marginError
+        currentSection * currentViewportHeight + offset + 10
 
       window.scrollTo({
         top: Math.max(0, Math.min(targetPosition, documentHeight)),
