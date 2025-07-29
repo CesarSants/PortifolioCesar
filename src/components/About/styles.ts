@@ -2,7 +2,7 @@
 // import fundo from '../../assets/backGrounds/cinza-19.webp'
 
 // export const Container = styled.div`
-//   height: 100vh;
+//   height: 100dvh;
 //   background-image: url(${fundo});
 //   background-size: cover;
 //   background-position: center;
@@ -40,7 +40,7 @@ import { fonts } from '../../styles'
 import fundo from '../../assets/backGrounds/roxo-6.jpg'
 
 export const Container = styled.div`
-  height: 200vh;
+  height: 200dvh;
   position: relative;
   opacity: 1;
   display: flex;
@@ -106,15 +106,15 @@ export const Container = styled.div`
   }
 
   .container1 {
-    min-height: 100vh;
-    max-height: 100vh;
+    min-height: 100dvh;
+    max-height: 100dvh;
     display: flex;
     flex-direction: column;
   }
 
   .container2 {
-    min-height: 100vh;
-    max-height: 100vh;
+    min-height: 100dvh;
+    max-height: 100dvh;
     display: flex;
     flex-direction: column;
   }
@@ -127,28 +127,28 @@ export const Container = styled.div`
     max-width: 1024px;
     width: 100%;
     height: 100%;
-    max-height: 100vh;
+    max-height: 100dvh;
     margin: 0 auto;
   }
 
   @media (max-width: 1024px) {
     .resume.resume2 {
-      max-height: 50vh;
-      height: 50vh;
+      max-height: 50dvh;
+      height: 50dvh;
     }
   }
 
   .resume {
-    width: 80vw;
+    width: 80dvw;
     line-height: 20px;
     font-family: ${fonts.fontPequena};
     font-size: 19px;
     position: relative;
     z-index: 0;
     border-radius: 40px;
-    max-height: 70vh;
-    height: 70vh;
-    margin-top: 16vh;
+    max-height: 70dvh;
+    height: 70dvh;
+    margin-top: 16dvh;
     p {
       padding: 0 20px;
     }
@@ -179,11 +179,11 @@ export const Container = styled.div`
       font-size: 18px;
       letter-spacing: 1.2px;
       line-height: 30px;
-      max-height: 40vh;
-      height: 40vh;
+      max-height: 40dvh;
+      height: 40dvh;
       position: relative;
-      margin-top: -15vh;
-      margin-bottom: 8.5vh;
+      margin-top: -15dvh;
+      margin-bottom: 8.5dvh;
       padding: 10px 0;
 
       .backgroundResume {
@@ -290,7 +290,7 @@ export const Container = styled.div`
       margin-top: -20px;
       display: flex;
       width: 100%;
-      height: 40vh;
+      height: 40dvh;
       overflow: visible;
 
       svg {
@@ -298,9 +298,13 @@ export const Container = styled.div`
       }
     }
 
+    .complemento-sobre {
+      margin-top: 18dvh;
+    }
+
     .complemento-sobre svg {
       width: auto;
-      height: 40vh;
+      height: 40dvh;
     }
 
     .svg-image {
@@ -311,7 +315,7 @@ export const Container = styled.div`
       img {
         margin-top: 2px;
         margin-left: -49px;
-        height: 30vh;
+        height: 30dvh;
         width: auto;
       }
     }
@@ -397,19 +401,19 @@ export const Container = styled.div`
 
       .tec {
         display: grid;
-        margin-left: -10vw;
+        margin-left: -10dvw;
         margin-top: 40px;
         grid-template-columns: repeat(10, 10%);
         width: 100%;
-        height: 20vh;
-        column-gap: 1vw;
-        row-gap: 1vh;
+        height: 20dvh;
+        column-gap: 1dvw;
+        row-gap: 1dvh;
 
         .grid-item {
           width: 100%;
           height: 100%;
-          width: 8vw;
-          height: 8vh;
+          width: 8dvw;
+          height: 8dvh;
           gap: 0;
 
           img {

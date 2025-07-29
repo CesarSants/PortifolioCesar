@@ -2,14 +2,14 @@ import { styled } from 'styled-components'
 import { cores, fonts } from '../../styles'
 
 export const Container = styled.div`
-  height: 100vh;
+  height: 100dvh;
   position: relative;
   display: flex;
   flex-direction: column;
 
   .contentWrapper {
     padding-top: 180px;
-    /* padding-top: 30vh; */
+    /* padding-top: 30dvh; */
 
     height: 100%;
     align-items: center;
@@ -57,7 +57,7 @@ export const Container = styled.div`
 
   .content {
     max-width: 1024px;
-    margin: 5vh auto 0;
+    margin: 5dvh auto 0;
     display: flex;
     justify-content: space-between;
 
@@ -158,7 +158,7 @@ export const Container = styled.div`
       }
 
       .cta span {
-        font-size: clamp(1.2rem, 1.5vw + 1rem, 2rem);
+        font-size: clamp(1.2rem, 1.5dvw + 1rem, 2rem);
       }
 
       .cta:before {

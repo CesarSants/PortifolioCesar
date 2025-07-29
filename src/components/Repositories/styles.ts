@@ -2,7 +2,7 @@ import styled from 'styled-components'
 import { cores, fonts } from '../../styles'
 
 export const Container = styled.div`
-  height: 100vh;
+  height: 100dvh;
   padding-bottom: 20px;
 `
 
@@ -21,7 +21,7 @@ export const ContentWrapper = styled.div`
     display: flex;
     max-width: 1024px;
     width: 100%;
-    height: calc(100vh - 170px);
+    height: calc(100dvh - 170px);
     max-height: 100%;
 
     .background {
@@ -322,7 +322,7 @@ export const ContentWrapper = styled.div`
             }
 
             .cta span {
-              font-size: clamp(1.2rem, 1.5vw + 1rem, 2rem);
+              font-size: clamp(1.2rem, 1.5dvw + 1rem, 2rem);
 
               @media (max-width: 380px) {
                 font-size: 13px !important;

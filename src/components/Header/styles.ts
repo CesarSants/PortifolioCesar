@@ -4,7 +4,7 @@ import { cores, fonts } from '../../styles'
 export const HeaderContainer = styled.div`
   display: flex;
   justify-content: space-between;
-  width: 100vw;
+  width: 100dvw;
   height: 57px;
 
   .headerContainer {
@@ -52,7 +52,7 @@ export const Head = styled.header`
   .logo {
     z-index: 96;
     padding-left: 15px;
-    padding-right: 100vw;
+    padding-right: 100dvw;
     padding-top: 20px;
     padding-bottom: 44px;
   }
@@ -134,7 +134,7 @@ export const Head = styled.header`
   }
 
   .menu-aberto.active {
-    height: 50vh;
+    height: 50dvh;
     opacity: 1;
     /* z-index: 98000; */
   }
@@ -205,7 +205,7 @@ export const Head = styled.header`
   }
 
   .menu-aberto.active {
-    height: 50vh;
+    height: 50dvh;
     opacity: 1;
     transition: height 0.5s ease-in-out, opacity 0.5s ease-in-out;
   }
@@ -220,8 +220,8 @@ export const Head = styled.header`
   .chevron-up {
     display: block;
     position: fixed;
-    bottom: 48vh;
-    left: 85vw;
+    bottom: 48dvh;
+    left: 85dvw;
     transform: translateX(-50%);
     transition: opacity 0.4s ease-out;
     opacity: 0;
@@ -229,7 +229,7 @@ export const Head = styled.header`
     overflow: visible;
 
     @media (max-width: 678px) {
-      left: 15vw;
+      left: 15dvw;
       /* left: none; */
     }
   }
@@ -239,7 +239,7 @@ export const Head = styled.header`
   }
 
   .chevron-up {
-    bottom: 85vh;
+    bottom: 85dvh;
   }
 
   @keyframes bounce {

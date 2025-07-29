@@ -2,7 +2,7 @@ import { styled } from 'styled-components'
 import { cores, fonts } from '../../styles'
 
 export const Container = styled.div`
-  height: 100vh;
+  height: 100dvh;
   width: 100%;
   position: relative;
 
@@ -146,7 +146,7 @@ export const Container = styled.div`
       height: auto;
       max-height: 50%; */
       max-width: auto;
-      max-height: 47.5vh;
+      max-height: 47.5dvh;
       object-fit: cover;
       margin: auto;
       margin-top: -3%;
@@ -173,7 +173,7 @@ export const Container = styled.div`
   }
 
   .cta span {
-    font-size: clamp(1.2rem, 1.5vw + 1rem, 2rem);
+    font-size: clamp(1.2rem, 1.5dvw + 1rem, 2rem);
   }
 
   .cta:before {
@@ -350,13 +350,13 @@ export const Container = styled.div`
     display: flex;
     height: 100%;
     width: 100%;
-    padding-top: 22vh;
+    padding-top: 22dvh;
   }
 
   .content {
     position: relative;
     max-width: 1024px;
-    margin-right: calc((100vw - 1024px) / 2);
+    margin-right: calc((100dvw - 1024px) / 2);
     width: 100%;
     display: flex;
     justify-content: center;
@@ -365,14 +365,14 @@ export const Container = styled.div`
   }
 
   .aside {
-    width: calc((100vw - 1024px) / 2);
+    width: calc((100dvw - 1024px) / 2);
     min-width: 160px;
     position: relative;
   }
 
   .nav-tipos {
     position: sticky;
-    top: 10vh;
+    top: 10dvh;
     display: flex;
     flex-direction: column;
     margin: 0;
@@ -421,7 +421,7 @@ export const Container = styled.div`
   }
 
   @media (max-width: 1344px) {
-    /* height: 110vh; */
+    /* height: 110dvh; */
 
     ///////////////////////////////////////////////////////////
 
@@ -432,7 +432,7 @@ export const Container = styled.div`
       display: flex;
       position: sticky;
       /* top: 60px; */
-      top: 8vh;
+      top: 8dvh;
       padding: 10px 0;
       /* margin-top: -34%; */
       margin-top: -60px;
@@ -471,7 +471,7 @@ export const Container = styled.div`
     }
 
     .content-wrapper {
-      padding-top: 28vh;
+      padding-top: 28dvh;
       flex-direction: column;
       height: 100%;
     }
@@ -519,7 +519,7 @@ export const Container = styled.div`
 
   @media (max-height: 680px) {
     .nav-tipos2 {
-      top: 9.5vh;
+      top: 9.5dvh;
     }
   }
 `

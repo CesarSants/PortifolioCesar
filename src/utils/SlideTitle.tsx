@@ -10,9 +10,9 @@ type Props = {
 
 const HeadlineWrapper = styled.div<{ height: string }>`
   height: ${(props) => props.height};
-  // height: 10vh;
+  // height: 10dvh;
   /* height: 30%; */
-  width: 100vw;
+  width: 100dvw;
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -38,8 +38,8 @@ const HeadlineWrapper = styled.div<{ height: string }>`
   .headline-scroll span {
     font-family: ${fonts.fontGrande};
     // font-size: 5rem;
-    font-size: 10vh;
-    margin-top: 1vh;
+    font-size: 10dvh;
+    margin-top: 1dvh;
     text-transform: uppercase;
     display: flex;
     align-items: center;

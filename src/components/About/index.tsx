@@ -129,7 +129,7 @@ const About = () => {
                   textAnchor="middle"
                 >
                   <textPath href="#text-circle" startOffset="50%">
-                    Front-End ✧—·—✧ Web Developer ✧—·—✧
+                    Full-Stack ✧—·—✧ Web Developer ✧—·—✧
                   </textPath>
                 </text>
                 <circle
@@ -182,6 +182,9 @@ const About = () => {
                 PrimeFaces, utilizando ferramentas como Maven e Gradle para
                 build. Tenho experiência com servidores de aplicação como
                 Tomcat, JBoss/WildFly e Payara.
+                <br />
+                Trabalho com bancos de dados SQL (PostgreSQL, MySQL) e NoSQL
+                (MongoDB).
                 <br />
                 <br />
                 Para infraestrutura e deploy, utilizo Docker para empacotamento

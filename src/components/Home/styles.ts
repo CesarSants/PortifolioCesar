@@ -3,7 +3,7 @@ import { cores, fonts } from '../../styles'
 
 export const Container = styled.main`
   width: 100%;
-  height: 100vh;
+  height: 100dvh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -13,11 +13,11 @@ export const Container = styled.main`
   .destaque-inicio {
     text-align: center;
     justify-content: center;
-    margin-top: 1vh;
+    margin-top: 1dvh;
     display: flex;
     img {
       max-width: 558px;
-      max-height: 60vh;
+      max-height: 60dvh;
       width: 100%;
       height: auto;
       object-fit: contain;
@@ -30,7 +30,7 @@ export const Container = styled.main`
   }
 
   .paragrafo-inicio {
-    /* margin-top: -10vh; */
+    /* margin-top: -10dvh; */
 
     text-align: center;
     color: #c4acf0;
@@ -41,7 +41,7 @@ export const Container = styled.main`
 
     p:first-child {
       /* font-size: 48px; */
-      font-size: 6.49vh;
+      font-size: 6.49dvh;
     }
     span {
       color: #3e79f7;
@@ -51,7 +51,7 @@ export const Container = styled.main`
       @media (max-width: 800px) {
         display: block;
         /* min-height: 56px; */
-        min-height: 8vh;
+        min-height: 8dvh;
       }
     }
   }
@@ -69,7 +69,7 @@ export const Container = styled.main`
   }
 
   .cta span {
-    font-size: clamp(1.2rem, 1.5vw + 1rem, 2rem);
+    font-size: clamp(1.2rem, 1.5dvw + 1rem, 2rem);
   }
 
   .cta:before {
