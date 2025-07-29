@@ -148,8 +148,9 @@ const About = () => {
           </div>
         </div>
       </div>
-      <div id="resume2" />
+
       <div className="container2">
+        <div id="resume2" />
         <h3 data-aos="fade-up" data-aos-duration="2000" data-aos-delay="300">
           Habilidades
         </h3>
