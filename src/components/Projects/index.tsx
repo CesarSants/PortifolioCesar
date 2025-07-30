@@ -223,7 +223,7 @@ const Projects: React.FC = () => {
 
   return (
     <Container id="projetos">
-      <HeadlineScroll content="projetos" height="25%" />
+      <HeadlineScroll content="projetos" height="28%" />
       <div className="content-wrapper" ref={contentWrapperRef}>
         <aside
           className="aside"

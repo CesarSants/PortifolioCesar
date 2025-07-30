@@ -135,6 +135,7 @@ export const Container = styled.div`
     .resume.resume2 {
       max-height: 50dvh;
       height: 50dvh;
+      margin-bottom: 3dvh;
     }
   }
 
@@ -207,7 +208,7 @@ export const Container = styled.div`
         position: relative;
         max-height: 100%;
         overflow-y: auto;
-        padding: 20px;
+        padding: 0 20px 10px 20px;
         scrollbar-width: thin;
         scrollbar-color: rgba(100, 100, 100, 0.6) transparent;
 

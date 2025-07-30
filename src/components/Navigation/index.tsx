@@ -49,8 +49,8 @@ const Navigation: React.FC = () => {
           element.getBoundingClientRect().top + window.pageYOffset
         // Aplicamos o offset na direção correta
         const offsets = {
-          up: 1, // 50px a menos quando sobe
-          down: 1 // 100px a mais quando desce
+          up: 2,
+          down: 2
         }
 
         // Aplicamos o offset baseado na direção

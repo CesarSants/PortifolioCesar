@@ -119,7 +119,7 @@ const Contact = () => {
       <div className="background">
         <img src={fundo} alt="Fundo" />
       </div>
-      <HeadlineScroll content="contato" height="26%" />
+      <HeadlineScroll content="contato" height="28%" />
       <div className="contentWrapper">
         <div
           className="content"
