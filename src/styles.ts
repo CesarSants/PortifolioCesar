@@ -27,6 +27,10 @@ export const GlobalCss = createGlobalStyle`
     color: ${cores.branca};
     overflow-x: hidden;
 
+    #root {
+      overflow-x: hidden;
+    }
+
     .particlesContainer{
       position: fixed;
       top: 0;
