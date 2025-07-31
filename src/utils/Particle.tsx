@@ -471,58 +471,111 @@ const Particle = () => {
             image: [
               {
                 src: 'https://fake-api-khaki.vercel.app/img/css.png',
-                width: 100,
-                height: 100
+                width: 920,
+                height: 1129,
+                size: 'contain'
               },
               {
                 src: 'https://fake-api-khaki.vercel.app/img/git.png',
-                width: 100,
-                height: 100
+                width: 360,
+                height: 360,
+                size: 'contain'
               },
               {
                 src: 'https://fake-api-khaki.vercel.app/img/github.png',
-                width: 100,
-                height: 100
+                width: 900,
+                height: 930,
+                size: 'contain'
               },
               {
                 src: 'https://fake-api-khaki.vercel.app/img/html.png',
-                width: 100,
-                height: 100
+                width: 1200,
+                height: 1200,
+                size: 'contain'
               },
               {
                 src: 'https://fake-api-khaki.vercel.app/img/javascript.png',
-                width: 100,
-                height: 100
+                width: 980,
+                height: 980,
+                size: 'contain'
               },
               {
                 src: 'https://fake-api-khaki.vercel.app/img/react.png',
-                width: 100,
-                height: 100
+                width: 500,
+                height: 500,
+                size: 'contain'
               },
               {
                 src: 'https://fake-api-khaki.vercel.app/img/redux.png',
-                width: 100,
-                height: 100
+                width: 920,
+                height: 920,
+                size: 'contain'
               },
               {
                 src: 'https://fake-api-khaki.vercel.app/img/td.png',
-                width: 100,
-                height: 100
+                width: 512,
+                height: 512,
+                size: 'contain'
               },
               {
                 src: 'https://fake-api-khaki.vercel.app/img/vite.png',
-                width: 100,
-                height: 100
-              },
-              {
-                src: 'https://fake-api-khaki.vercel.app/img/vscode.png',
-                width: 100,
-                height: 100
+                width: 1280,
+                height: 720,
+                size: 'contain'
               },
               {
                 src: 'https://fake-api-khaki.vercel.app/img/vue.png',
-                width: 100,
-                height: 100
+                width: 920,
+                height: 920,
+                size: 'contain'
+              },
+              {
+                src: 'https://fake-api-khaki.vercel.app/img/docker.png',
+                width: 441,
+                height: 267,
+                size: 'contain'
+              },
+              {
+                src: 'https://fake-api-khaki.vercel.app/img/java.png',
+                width: 278,
+                height: 440,
+                size: 'contain'
+              },
+              {
+                src: 'https://fake-api-khaki.vercel.app/img/kubernetes.png',
+                width: 282,
+                height: 272,
+                size: 'contain'
+              },
+              {
+                src: 'https://fake-api-khaki.vercel.app/img/mongodb.png',
+                width: 205,
+                height: 401,
+                size: 'contain'
+              },
+              {
+                src: 'https://fake-api-khaki.vercel.app/img/node.png',
+                width: 631,
+                height: 885,
+                size: 'contain'
+              },
+              {
+                src: 'https://fake-api-khaki.vercel.app/img/postgresql.png',
+                width: 413,
+                height: 419,
+                size: 'contain'
+              },
+              {
+                src: 'https://fake-api-khaki.vercel.app/img/primefaces.png',
+                width: 373,
+                height: 390,
+                size: 'contain'
+              },
+              {
+                src: 'https://fake-api-khaki.vercel.app/img/java.png',
+                width: 278,
+                height: 440,
+                size: 'contain'
               }
             ]
           }

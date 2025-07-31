@@ -225,7 +225,7 @@ export const Head = styled.header`
     transform: translateX(-50%);
     transition: opacity 0.4s ease-out;
     opacity: 0;
-    z-index: 1000;
+    z-index: 10000;
     overflow: visible;
 
     @media (max-width: 678px) {
@@ -240,6 +240,10 @@ export const Head = styled.header`
 
   .chevron-up {
     bottom: 85dvh;
+  }
+
+  .chevron-down {
+    bottom: 52dvh;
   }
 
   @keyframes bounce {

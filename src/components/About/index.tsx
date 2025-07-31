@@ -45,6 +45,39 @@ import imagemVscodeDark from '../../assets/tec/vscode-dark.png'
 import imagemVue from '../../assets/tec/vue.png'
 import imagemVueDark from '../../assets/tec/vue-dark.png'
 
+import imagemDocker from '../../assets/tec/docker.png'
+import imagemGit from '../../assets/tec/git.png'
+import imagemGradle from '../../assets/tec/gradle.png'
+import imagemHibernate from '../../assets/tec/hibernate.png'
+import imagemJava from '../../assets/tec/java.png'
+import imagemKubernetes from '../../assets/tec/kubernetes.png'
+import imagemMaven from '../../assets/tec/maven.png'
+import imagemMongodb from '../../assets/tec/mongodb.png'
+import imagemMysql from '../../assets/tec/mysql.png'
+import imagemPayara from '../../assets/tec/payara.png'
+import imagemPostgresql from '../../assets/tec/postgresql.webp'
+import imagemPrimefaces from '../../assets/tec/primefaces.png'
+import imagemSpringboot from '../../assets/tec/springboot.png'
+import imagemTerraform from '../../assets/tec/terraform.png'
+import imagemTomcat from '../../assets/tec/tomcat.png'
+import imagemWildfly from '../../assets/tec/wildfly.png'
+import imagemDockerDark from '../../assets/tec/docker-dark.png'
+import imagemGitDark from '../../assets/tec/git-dark.png'
+import imagemGradleDark from '../../assets/tec/gradle-dark.png'
+import imagemHibernateDark from '../../assets/tec/hibernate-dark.png'
+import imagemJavaDark from '../../assets/tec/java-dark.png'
+import imagemKubernetesDark from '../../assets/tec/kubernetes-dark.png'
+import imagemMavenDark from '../../assets/tec/maven-dark.png'
+import imagemMongodbDark from '../../assets/tec/mongodb-dark.png'
+import imagemMysqlDark from '../../assets/tec/mysql-dark.png'
+import imagemPayaraDark from '../../assets/tec/payara-dark.png'
+import imagemPostgresqlDark from '../../assets/tec/postgresql-dark.png'
+import imagemPrimefacesDark from '../../assets/tec/primefaces-dark.png'
+import imagemSpringbootDark from '../../assets/tec/springboot-dark.png'
+import imagemTerraformDark from '../../assets/tec/terraform-dark.png'
+import imagemTomcatDark from '../../assets/tec/tomcat-dark.png'
+import imagemWildflyDark from '../../assets/tec/wildfly-dark.png'
+
 const About = () => {
   return (
     <Container className="sobre" id="sobre">
@@ -62,7 +95,7 @@ const About = () => {
           data-aos-delay="300"
         >
           <div
-            className="resume"
+            className="resume resume1"
             data-aos="fade-right"
             data-aos-duration="2000"
             data-aos-delay="300"
@@ -179,8 +212,9 @@ const About = () => {
                 <br />
                 <br />
                 No back-end, trabalho com Java, Spring Boot, Hibernate, JSP e
-                PrimeFaces, utilizando ferramentas como Maven e Gradle para
-                build. Tenho experiência com servidores de aplicação como
+                PrimeFaces, desenvolvendo APIs REST e utilizando ferramentas
+                como Maven, Gradle e Git para build, versionamento e pipelines
+                CI/CD. Tenho experiência com servidores de aplicação como
                 Tomcat, JBoss/WildFly e Payara.
                 <br />
                 Trabalho com bancos de dados SQL (PostgreSQL, MySQL) e NoSQL
@@ -296,6 +330,66 @@ const About = () => {
                   {
                     normal: imagemVue,
                     dark: imagemVueDark
+                  },
+                  {
+                    normal: imagemDocker,
+                    dark: imagemDockerDark
+                  },
+                  {
+                    normal: imagemGit,
+                    dark: imagemGitDark
+                  },
+                  {
+                    normal: imagemGradle,
+                    dark: imagemGradleDark
+                  },
+                  {
+                    normal: imagemHibernate,
+                    dark: imagemHibernateDark
+                  },
+                  {
+                    normal: imagemJava,
+                    dark: imagemJavaDark
+                  },
+                  {
+                    normal: imagemKubernetes,
+                    dark: imagemKubernetesDark
+                  },
+                  {
+                    normal: imagemMaven,
+                    dark: imagemMavenDark
+                  },
+                  {
+                    normal: imagemMongodb,
+                    dark: imagemMongodbDark
+                  },
+                  {
+                    normal: imagemMysql,
+                    dark: imagemMysqlDark
+                  },
+                  {
+                    normal: imagemPayara,
+                    dark: imagemPayaraDark
+                  },
+                  {
+                    normal: imagemPostgresql,
+                    dark: imagemPostgresqlDark
+                  },
+                  {
+                    normal: imagemPrimefaces,
+                    dark: imagemPrimefacesDark
+                  },
+                  {
+                    normal: imagemSpringboot,
+                    dark: imagemSpringbootDark
+                  },
+                  {
+                    normal: imagemTerraform,
+                    dark: imagemTerraformDark
+                  },
+                  {
+                    normal: imagemWildfly,
+                    dark: imagemWildflyDark
                   }
                 ].map((image, index) => (
                   <div

@@ -27,7 +27,7 @@ const Home = () => {
             <p>
               Desenvolvedor{' '}
               <span>
-                <AnimatedText textArray={['Front-End', 'Criativo', 'Web']} />
+                <AnimatedText textArray={['Full-Stack', 'Criativo', 'Web']} />
               </span>
             </p>
             <p>Conectando design e tecnologia para dar vida às suas ideias.</p>

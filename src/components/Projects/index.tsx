@@ -92,17 +92,22 @@ const Projects: React.FC = () => {
   const CustomPrevArrow = ({ onClick }: { onClick?: () => void }) => (
     <button
       onClick={onClick}
+      onTouchEnd={(e) => {
+        e.preventDefault()
+        onClick && onClick()
+      }}
       style={{
         background: 'none',
         border: 'none',
         cursor: 'pointer',
         display: 'flex',
         position: 'absolute',
-        left: '-43px',
+        left: '-83px',
         top: '50%',
         transform: 'translateY(-50%)',
-        zIndex: 2,
-        padding: 20
+        zIndex: 2000,
+        padding: '60px 40px 60px 60px',
+        touchAction: 'manipulation'
       }}
       aria-label="Previous Slide"
     >
@@ -113,17 +118,22 @@ const Projects: React.FC = () => {
   const CustomNextArrow = ({ onClick }: { onClick?: () => void }) => (
     <button
       onClick={onClick}
+      onTouchEnd={(e) => {
+        e.preventDefault()
+        onClick && onClick()
+      }}
       style={{
         background: 'none',
         border: 'none',
         cursor: 'pointer',
         display: 'flex',
         position: 'absolute',
-        right: '-43px',
+        right: '-83px',
         top: '50%',
         transform: 'translateY(-50%)',
-        zIndex: 2,
-        padding: 20
+        zIndex: 2000,
+        padding: '60px 60px 60px 40px',
+        touchAction: 'manipulation'
       }}
       aria-label="Next Slide"
     >

@@ -797,6 +797,7 @@ import imageScss from '../../assets/tec/sass.png'
 import imageReact from '../../assets/tec/react.png'
 import imageTypeScript from '../../assets/tec/typescript.png'
 import imageVue from '../../assets/tec/vue.png'
+import imagemJava from '../../assets/tec/java.png'
 
 const languageImages: Record<string, string> = {
   html: imageHtml,
@@ -807,7 +808,8 @@ const languageImages: Record<string, string> = {
   typescript: imageTypeScript,
   react: imageReact,
   vue: imageVue,
-  bootstrap: imageBootstrap
+  bootstrap: imageBootstrap,
+  java: imagemJava
 }
 
 interface Repositorio {

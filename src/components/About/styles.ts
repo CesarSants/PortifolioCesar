@@ -135,6 +135,10 @@ export const Container = styled.div`
     .resume.resume2 {
       max-height: 50dvh;
       height: 50dvh;
+      margin-bottom: 1dvh;
+    }
+
+    .resume.resume1 {
       margin-bottom: 3dvh;
     }
   }
@@ -259,7 +263,7 @@ export const Container = styled.div`
     align-items: center;
     width: auto;
     z-index: 0;
-    margin-top: 100px;
+    margin-top: 16dvh;
   }
 
   .complemento-sobre svg {
@@ -300,7 +304,7 @@ export const Container = styled.div`
     }
 
     .complemento-sobre {
-      margin-top: 18dvh;
+      margin-top: 20dvh;
     }
 
     .complemento-sobre svg {
@@ -354,8 +358,9 @@ export const Container = styled.div`
   .tec {
     width: 580px;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(7, 1fr);
+    column-gap: 0;
+    row-gap: 7px;
     margin-left: 20px;
     padding-top: 10px;
     padding-bottom: 10px;
@@ -363,8 +368,8 @@ export const Container = styled.div`
 
   .grid-item {
     position: relative;
-    width: 100px;
-    height: 100px;
+    width: 75px;
+    height: 75px;
   }
 
   .grid-item img {
@@ -401,20 +406,19 @@ export const Container = styled.div`
       margin: 0 auto;
 
       .tec {
-        display: grid;
-        margin-left: -10dvw;
-        margin-top: 40px;
-        grid-template-columns: repeat(10, 10%);
-        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        margin-top: 3dvh;
+        width: 90%;
         height: 20dvh;
-        column-gap: 1dvw;
-        row-gap: 1dvh;
+        gap: 1dvh 1dvw;
+        justify-content: center;
+        margin: 3dvh auto 0;
 
         .grid-item {
-          width: 100%;
-          height: 100%;
-          width: 8dvw;
-          height: 8dvh;
+          flex: 0 0 calc((100% - 11dvw) / 12); /* 12 colunas com 11 gaps de 1dvw */
+          width: 7dvw;
+          height: 7dvh;
           gap: 0;
 
           img {
