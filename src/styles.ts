@@ -31,8 +31,8 @@ export const GlobalCss = createGlobalStyle`
       position: fixed;
       top: 0;
       left: 0;
-      width: 100vw;
-      height: 100vh;
+      width: 100dvw;
+      height: 100dvh;
       overflow: hidden;
       z-index: -1;
       background-image: url('https://fake-api-khaki.vercel.app/img/cinza-19.webp');
@@ -42,8 +42,8 @@ export const GlobalCss = createGlobalStyle`
 
       #tsparticles {
       position: absolute;
-      width: 100vw;
-      height: 100vh;
+      width: 100dvw;
+      height: 100dvh;
       overflow: hidden;
       opacity: 1;
     }
@@ -57,6 +57,6 @@ export const Container = styled.div`
   align-items: center;
   margin: 0 auto;
   width: 100%;
-  max-width: 100vw;
+  max-width: 100dvw;
   contain: paint;
 `

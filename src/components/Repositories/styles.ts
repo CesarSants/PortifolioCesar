@@ -21,7 +21,7 @@ export const ContentWrapper = styled.div`
     display: flex;
     max-width: 1024px;
     width: 100%;
-    height: calc(100vh - 170px);
+    height: calc(100dvh - 170px);
     max-height: 100%;
 
     .background {

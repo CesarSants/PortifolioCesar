@@ -134,7 +134,7 @@ export const Head = styled.header`
   }
 
   .menu-aberto.active {
-    height: 50vh;
+    height: 50dvh;
     opacity: 1;
     /* z-index: 98000; */
   }
@@ -205,7 +205,7 @@ export const Head = styled.header`
   }
 
   .menu-aberto.active {
-    height: 50vh;
+    height: 50dvh;
     opacity: 1;
     transition: height 0.5s ease-in-out, opacity 0.5s ease-in-out;
   }
@@ -220,7 +220,7 @@ export const Head = styled.header`
   .chevron-up {
     display: block;
     position: fixed;
-    bottom: 48vh;
+    bottom: 48dvh;
     left: 85dvw;
     transform: translateX(-50%);
     transition: opacity 0.4s ease-out;
@@ -239,11 +239,11 @@ export const Head = styled.header`
   }
 
   .chevron-up {
-    bottom: 85vh;
+    bottom: 85dvh;
   }
 
   .chevron-down {
-    bottom: 52vh;
+    bottom: 52dvh;
   }
 
   @keyframes bounce {
