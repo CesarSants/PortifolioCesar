@@ -4,7 +4,7 @@ import { cores, fonts } from '../../styles'
 export const Container = styled.div`
   height: 100dvh;
   padding-bottom: 20px;
-`
+` 
 
 export const ContentWrapper = styled.div`
   max-width: 1024px;
