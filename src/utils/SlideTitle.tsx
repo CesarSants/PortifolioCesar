@@ -73,16 +73,15 @@ const HeadlineScroll: React.FC<Props> = ({ content, height = '20%' }) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null)
   const [isMobile, setIsMobile] = useState(false)
 
-
   useEffect(() => {
     // Detectar se é dispositivo móvel
     const checkMobile = () => {
       setIsMobile(window.innerWidth <= 768)
     }
-    
+
     checkMobile()
     window.addEventListener('resize', checkMobile)
-    
+
     return () => {
       window.removeEventListener('resize', checkMobile)
     }
