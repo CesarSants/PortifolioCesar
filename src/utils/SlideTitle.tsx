@@ -30,7 +30,12 @@ const HeadlineWrapper = styled.div<{ height: string }>`
     align-items: center;
     white-space: nowrap;
     animation: scroll 35s linear infinite;
-    will-change: transform;
+  }
+
+  .headline-scroll:nth-child(2) {
+    position: absolute;
+    left: 100%;
+    top: 0;
   }
 
   @keyframes scroll {
@@ -38,7 +43,7 @@ const HeadlineWrapper = styled.div<{ height: string }>`
       transform: translateX(0);
     }
     100% {
-      transform: translateX(-50%);
+      transform: translateX(-100%);
     }
   }
 
@@ -94,28 +99,29 @@ const HeadlineScroll: React.FC<Props> = ({ content, height = '20%' }) => {
       const container = document.createElement('div')
       container.className = 'container'
 
-      // Criar dois grupos idênticos de conteúdo
+      // Criar dois grupos idênticos
       const group1 = document.createElement('div')
       const group2 = document.createElement('div')
       group1.className = 'headline-scroll'
       group2.className = 'headline-scroll'
 
-      // Adicionar conteúdo HTML
+      // Criar conteúdo base
       const contentHTML = `
         <span class="bold">${content}</span>
         <span class="divisor"></span>
         <span class="light">${content}</span>
-        <span class="divisor"></span>`.repeat(6)
+        <span class="divisor"></span>`
 
-      group1.innerHTML = contentHTML
-      group2.innerHTML = contentHTML
+      // Repetir 4 vezes para garantir cobertura em todas as telas
+      group1.innerHTML = contentHTML.repeat(4)
+      group2.innerHTML = contentHTML.repeat(4)
 
       // Limpar container anterior
       while (scrollContainer.firstChild) {
         scrollContainer.removeChild(scrollContainer.firstChild)
       }
 
-      // Montar nova estrutura
+      // Montar estrutura
       container.appendChild(group1)
       container.appendChild(group2)
       scrollContainer.appendChild(container)
