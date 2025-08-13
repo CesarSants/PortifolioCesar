@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef } from 'react'
 import styled from 'styled-components'
 import { cores, fonts } from '../styles'
 
@@ -7,7 +7,7 @@ type Props = {
   height?: string
 }
 
-const HeadlineWrapper = styled.div<{ height: string; isMobile: boolean }>`
+const HeadlineWrapper = styled.div<{ height: string }>`
   height: ${(props) => props.height};
   width: 100dvw;
   overflow: hidden;
@@ -21,7 +21,7 @@ const HeadlineWrapper = styled.div<{ height: string; isMobile: boolean }>`
     align-items: center;
     white-space: nowrap;
     animation: scroll 35s linear infinite;
-    /* Otimizações para dispositivos móveis */
+    /* Otimizações para evitar sobreposição */
     will-change: transform;
     transform: translateZ(0);
     backface-visibility: hidden;
@@ -43,7 +43,7 @@ const HeadlineWrapper = styled.div<{ height: string; isMobile: boolean }>`
     text-transform: uppercase;
     display: flex;
     align-items: center;
-    /* Otimizações para dispositivos móveis */
+    /* Otimizações para evitar sobreposição */
     flex-shrink: 0;
     white-space: nowrap;
     transform: translateZ(0);
@@ -67,25 +67,27 @@ const HeadlineWrapper = styled.div<{ height: string; isMobile: boolean }>`
     font-weight: lighter;
     color: #b37da7;
   }
+
+  /* Media query para dispositivos móveis */
+  @media (max-width: 768px) {
+    .headline-scroll {
+      animation-duration: 25s;
+    }
+
+    .headline-scroll span {
+      font-size: 8dvh;
+    }
+
+    .headline-scroll .divisor {
+      width: 15px;
+      height: 15px;
+      margin: 0 15px;
+    }
+  }
 `
 
 const HeadlineScroll: React.FC<Props> = ({ content, height = '20%' }) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null)
-  const [isMobile, setIsMobile] = useState(false)
-
-  useEffect(() => {
-    // Detectar se é dispositivo móvel
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 768)
-    }
-
-    checkMobile()
-    window.addEventListener('resize', checkMobile)
-
-    return () => {
-      window.removeEventListener('resize', checkMobile)
-    }
-  }, [])
 
   useEffect(() => {
     const scrollContainer = scrollContainerRef.current
@@ -104,12 +106,19 @@ const HeadlineScroll: React.FC<Props> = ({ content, height = '20%' }) => {
     <HeadlineWrapper
       ref={scrollContainerRef}
       height={height}
-      isMobile={isMobile}
       data-aos="fade-up"
       data-aos-delay="300"
       data-aos-duration="1000"
     >
       <div id="headline-scroll" className="headline-scroll">
+        <span className="bold">{content}</span>
+        <span className="divisor"></span>
+        <span className="light">{content}</span>
+        <span className="divisor"></span>
+        <span className="bold">{content}</span>
+        <span className="divisor"></span>
+        <span className="light">{content}</span>
+        <span className="divisor"></span>
         <span className="bold">{content}</span>
         <span className="divisor"></span>
         <span className="light">{content}</span>
