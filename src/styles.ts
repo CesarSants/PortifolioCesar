@@ -62,5 +62,4 @@ export const Container = styled.div`
   /* Garantindo que não haja scroll horizontal */
   max-width: 100vw;
   /* Garantindo que os elementos filhos não vazem */
-  contain: paint;
 `
