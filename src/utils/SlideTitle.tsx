@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { cores, fonts } from '../styles'
 
@@ -7,7 +7,7 @@ type Props = {
   height?: string
 }
 
-const HeadlineWrapper = styled.div<{ height: string }>`
+const HeadlineWrapper = styled.div<{ height: string; isMobile: boolean }>`
   height: ${(props) => props.height};
   width: 100dvw;
   overflow: hidden;
@@ -21,6 +21,10 @@ const HeadlineWrapper = styled.div<{ height: string }>`
     align-items: center;
     white-space: nowrap;
     animation: scroll 35s linear infinite;
+    /* Otimizações para dispositivos móveis */
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
   }
 
   @keyframes scroll {
@@ -39,6 +43,10 @@ const HeadlineWrapper = styled.div<{ height: string }>`
     text-transform: uppercase;
     display: flex;
     align-items: center;
+    /* Otimizações para dispositivos móveis */
+    flex-shrink: 0;
+    white-space: nowrap;
+    transform: translateZ(0);
   }
 
   .headline-scroll .divisor {
@@ -47,6 +55,7 @@ const HeadlineWrapper = styled.div<{ height: string }>`
     background-color: ${cores.cinza};
     border-radius: 50%;
     margin: 0 20px;
+    flex-shrink: 0;
   }
 
   .headline-scroll .bold {
@@ -62,6 +71,7 @@ const HeadlineWrapper = styled.div<{ height: string }>`
 
 const HeadlineScroll: React.FC<Props> = ({ content, height = '20%' }) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null)
+  const [isMobile, setIsMobile] = useState(false)
 
   useEffect(() => {
     const scrollContainer = scrollContainerRef.current
@@ -76,10 +86,24 @@ const HeadlineScroll: React.FC<Props> = ({ content, height = '20%' }) => {
     }
   }, [])
 
+  useEffect(() => {
+    const scrollContainer = scrollContainerRef.current
+    if (scrollContainer) {
+      const headlineScroll = scrollContainer.children[0] as HTMLElement
+      const clone = headlineScroll.cloneNode(true) as HTMLElement
+      scrollContainer.appendChild(clone)
+
+      const scrollWidth = headlineScroll.scrollWidth
+      headlineScroll.style.width = `${scrollWidth}px`
+      clone.style.width = `${scrollWidth}px`
+    }
+  }, [isMobile])
+
   return (
     <HeadlineWrapper
       ref={scrollContainerRef}
       height={height}
+      isMobile={isMobile}
       data-aos="fade-up"
       data-aos-delay="300"
       data-aos-duration="1000"
