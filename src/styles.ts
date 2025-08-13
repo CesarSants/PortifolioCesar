@@ -57,10 +57,6 @@ export const Container = styled.div`
   align-items: center;
   margin: 0 auto;
   width: 100%;
-  /* Removendo overflow:hidden e usando clip para conter o conteúdo */
-
-  /* Garantindo que não haja scroll horizontal */
   max-width: 100vw;
-  /* Garantindo que os elementos filhos não vazem */
   contain: paint;
 `

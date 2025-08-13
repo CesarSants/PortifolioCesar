@@ -10,20 +10,27 @@ type Props = {
 
 const HeadlineWrapper = styled.div<{ height: string }>`
   height: ${(props) => props.height};
-  // height: 10dvh;
-  /* height: 30%; */
   width: 100dvw;
   overflow: hidden;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   position: absolute;
+  transform: translateZ(0);
+  z-index: 1;
+  isolation: isolate;
+
+  .container {
+    display: flex;
+    position: relative;
+  }
 
   .headline-scroll {
     display: flex;
     align-items: center;
     white-space: nowrap;
     animation: scroll 35s linear infinite;
+    will-change: transform;
   }
 
   @keyframes scroll {
@@ -37,12 +44,14 @@ const HeadlineWrapper = styled.div<{ height: string }>`
 
   .headline-scroll span {
     font-family: ${fonts.fontGrande};
-    // font-size: 5rem;
     font-size: 10dvh;
     margin-top: 1dvh;
     text-transform: uppercase;
     display: flex;
     align-items: center;
+    margin: 0 10px;
+    white-space: nowrap;
+    flex-shrink: 0;
   }
 
   .headline-scroll .divisor {
@@ -51,6 +60,9 @@ const HeadlineWrapper = styled.div<{ height: string }>`
     background-color: ${cores.cinza};
     border-radius: 50%;
     margin: 0 20px;
+    /* Garantindo que o divisor mantenha seu tamanho */
+    flex-shrink: 0;
+    flex-grow: 0;
   }
 
   .headline-scroll .bold {
@@ -79,15 +91,36 @@ const HeadlineScroll: React.FC<Props> = ({ content, height = '20%' }) => {
   useEffect(() => {
     const scrollContainer = scrollContainerRef.current
     if (scrollContainer) {
-      const headlineScroll = scrollContainer.children[0] as HTMLElement
-      const clone = headlineScroll.cloneNode(true) as HTMLElement
-      scrollContainer.appendChild(clone)
+      const container = document.createElement('div')
+      container.className = 'container'
 
-      const scrollWidth = headlineScroll.scrollWidth
-      headlineScroll.style.width = `${scrollWidth}px`
-      clone.style.width = `${scrollWidth}px`
+      // Criar dois grupos idênticos de conteúdo
+      const group1 = document.createElement('div')
+      const group2 = document.createElement('div')
+      group1.className = 'headline-scroll'
+      group2.className = 'headline-scroll'
+
+      // Adicionar conteúdo HTML
+      const contentHTML = `
+        <span class="bold">${content}</span>
+        <span class="divisor"></span>
+        <span class="light">${content}</span>
+        <span class="divisor"></span>`.repeat(6)
+
+      group1.innerHTML = contentHTML
+      group2.innerHTML = contentHTML
+
+      // Limpar container anterior
+      while (scrollContainer.firstChild) {
+        scrollContainer.removeChild(scrollContainer.firstChild)
+      }
+
+      // Montar nova estrutura
+      container.appendChild(group1)
+      container.appendChild(group2)
+      scrollContainer.appendChild(container)
     }
-  }, [])
+  }, [content])
 
   return (
     <HeadlineWrapper
@@ -97,32 +130,7 @@ const HeadlineScroll: React.FC<Props> = ({ content, height = '20%' }) => {
       data-aos-delay="300"
       data-aos-duration="1000"
     >
-      <div id="headline-scroll" className="headline-scroll">
-        <span className="bold">{content}</span>
-        <span className="divisor"></span>
-        <span className="light">{content}</span>
-        <span className="divisor"></span>
-        <span className="bold">{content}</span>
-        <span className="divisor"></span>
-        <span className="light">{content}</span>
-        <span className="divisor"></span>
-        <span className="bold">{content}</span>
-        <span className="divisor"></span>
-        <span className="light">{content}</span>
-        <span className="divisor"></span>
-        <span className="bold">{content}</span>
-        <span className="divisor"></span>
-        <span className="light">{content}</span>
-        <span className="divisor"></span>
-        <span className="bold">{content}</span>
-        <span className="divisor"></span>
-        <span className="light">{content}</span>
-        <span className="divisor"></span>
-        <span className="bold">{content}</span>
-        <span className="divisor"></span>
-        <span className="light">{content}</span>
-        <span className="divisor"></span>
-      </div>
+      <div></div>
     </HeadlineWrapper>
   )
 }
