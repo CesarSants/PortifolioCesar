@@ -16,7 +16,6 @@ const HeadlineWrapper = styled.div<{
   width: 100dvw;
   overflow: hidden;
   position: absolute;
-  z-index: 1;
   display: flex;
   align-items: center;
   justify-content: flex-start;
