@@ -73,16 +73,18 @@ const HeadlineScroll: React.FC<Props> = ({ content, height = '20%' }) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null)
   const [isMobile, setIsMobile] = useState(false)
 
-  useEffect(() => {
-    const scrollContainer = scrollContainerRef.current
-    if (scrollContainer) {
-      const headlineScroll = scrollContainer.children[0] as HTMLElement
-      const clone = headlineScroll.cloneNode(true) as HTMLElement
-      scrollContainer.appendChild(clone)
 
-      const scrollWidth = headlineScroll.scrollWidth
-      headlineScroll.style.width = `${scrollWidth}px`
-      clone.style.width = `${scrollWidth}px`
+  useEffect(() => {
+    // Detectar se é dispositivo móvel
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768)
+    }
+    
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    
+    return () => {
+      window.removeEventListener('resize', checkMobile)
     }
   }, [])
 
@@ -97,7 +99,7 @@ const HeadlineScroll: React.FC<Props> = ({ content, height = '20%' }) => {
       headlineScroll.style.width = `${scrollWidth}px`
       clone.style.width = `${scrollWidth}px`
     }
-  }, [isMobile])
+  }, [])
 
   return (
     <HeadlineWrapper
