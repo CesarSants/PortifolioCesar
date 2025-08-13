@@ -12,30 +12,25 @@ const HeadlineWrapper = styled.div<{ height: string }>`
   height: ${(props) => props.height};
   width: 100dvw;
   overflow: hidden;
+  position: absolute;
+  z-index: 1;
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  position: absolute;
-  transform: translateZ(0);
-  z-index: 1;
-  isolation: isolate;
 
-  .container {
+  .slider-track {
+    position: absolute;
+    white-space: nowrap;
+    will-change: transform;
+    animation: scroll 35s linear infinite;
     display: flex;
-    position: relative;
   }
 
-  .headline-scroll {
-    display: flex;
+  .slider-content {
+    display: inline-flex;
     align-items: center;
     white-space: nowrap;
-    animation: scroll 35s linear infinite;
-  }
-
-  .headline-scroll:nth-child(2) {
-    position: absolute;
-    left: 100%;
-    top: 0;
+    flex-shrink: 0;
   }
 
   @keyframes scroll {
@@ -43,8 +38,40 @@ const HeadlineWrapper = styled.div<{ height: string }>`
       transform: translateX(0);
     }
     100% {
-      transform: translateX(-100%);
+      transform: translateX(-50%);
     }
+  }
+
+  span {
+    font-family: ${fonts.fontGrande};
+    font-size: 10dvh;
+    margin-top: 1dvh;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    margin: 0 10px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .divisor {
+    width: 20px;
+    height: 20px;
+    background-color: ${cores.cinza};
+    border-radius: 50%;
+    margin: 0 20px;
+    flex-shrink: 0;
+    flex-grow: 0;
+  }
+
+  .bold {
+    font-weight: bold;
+    color: ${cores.branca};
+  }
+
+  .light {
+    font-weight: lighter;
+    color: #b37da7;
   }
 
   .headline-scroll span {
@@ -96,35 +123,35 @@ const HeadlineScroll: React.FC<Props> = ({ content, height = '20%' }) => {
   useEffect(() => {
     const scrollContainer = scrollContainerRef.current
     if (scrollContainer) {
-      const container = document.createElement('div')
-      container.className = 'container'
+      // Criar a track principal
+      const track = document.createElement('div')
+      track.className = 'slider-track'
 
-      // Criar dois grupos idênticos
-      const group1 = document.createElement('div')
-      const group2 = document.createElement('div')
-      group1.className = 'headline-scroll'
-      group2.className = 'headline-scroll'
+      // Criar o conteúdo base que será duplicado
+      const baseContent = document.createElement('div')
+      baseContent.className = 'slider-content'
 
-      // Criar conteúdo base
-      const contentHTML = `
+      // Adicionar os elementos ao conteúdo base
+      const itemHtml = `
         <span class="bold">${content}</span>
         <span class="divisor"></span>
         <span class="light">${content}</span>
         <span class="divisor"></span>`
 
-      // Repetir 4 vezes para garantir cobertura em todas as telas
-      group1.innerHTML = contentHTML.repeat(4)
-      group2.innerHTML = contentHTML.repeat(4)
+      // Repetir o suficiente para garantir cobertura
+      baseContent.innerHTML = itemHtml.repeat(6)
+
+      // Duplicar o conteúdo base para criar uma sequência contínua
+      track.appendChild(baseContent)
+      track.appendChild(baseContent.cloneNode(true))
 
       // Limpar container anterior
       while (scrollContainer.firstChild) {
         scrollContainer.removeChild(scrollContainer.firstChild)
       }
 
-      // Montar estrutura
-      container.appendChild(group1)
-      container.appendChild(group2)
-      scrollContainer.appendChild(container)
+      // Adicionar a track
+      scrollContainer.appendChild(track)
     }
   }, [content])
 
