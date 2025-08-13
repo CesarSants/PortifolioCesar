@@ -114,18 +114,6 @@ const HeadlineScroll: React.FC<Props> = ({ content, height = '20%' }) => {
         <span className="divisor"></span>
         <span className="light">{content}</span>
         <span className="divisor"></span>
-        <span className="bold">{content}</span>
-        <span className="divisor"></span>
-        <span className="light">{content}</span>
-        <span className="divisor"></span>
-        <span className="bold">{content}</span>
-        <span className="divisor"></span>
-        <span className="light">{content}</span>
-        <span className="divisor"></span>
-        <span className="bold">{content}</span>
-        <span className="divisor"></span>
-        <span className="light">{content}</span>
-        <span className="divisor"></span>
       </div>
     </HeadlineWrapper>
   )
