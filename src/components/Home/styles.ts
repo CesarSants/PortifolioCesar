@@ -13,11 +13,11 @@ export const Container = styled.main`
   .destaque-inicio {
     text-align: center;
     justify-content: center;
-    margin-top: 1dvh;
+    margin-top: 1vh;
     display: flex;
     img {
       max-width: 558px;
-      max-height: 60dvh;
+      max-height: 60vh;
       width: 100%;
       height: auto;
       object-fit: contain;
@@ -30,7 +30,7 @@ export const Container = styled.main`
   }
 
   .paragrafo-inicio {
-    /* margin-top: -10dvh; */
+    /* margin-top: -10vh; */
 
     text-align: center;
     color: #c4acf0;
@@ -41,7 +41,7 @@ export const Container = styled.main`
 
     p:first-child {
       /* font-size: 48px; */
-      font-size: 6.49dvh;
+      font-size: 6.49vh;
     }
     span {
       color: #3e79f7;
@@ -51,7 +51,7 @@ export const Container = styled.main`
       @media (max-width: 800px) {
         display: block;
         /* min-height: 56px; */
-        min-height: 8dvh;
+        min-height: 8vh;
       }
     }
   }

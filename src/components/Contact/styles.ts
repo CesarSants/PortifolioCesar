@@ -9,7 +9,7 @@ export const Container = styled.div`
 
   .contentWrapper {
     padding-top: 180px;
-    /* padding-top: 30dvh; */
+    /* padding-top: 30vh; */
 
     height: 100%;
     align-items: center;
@@ -57,7 +57,7 @@ export const Container = styled.div`
 
   .content {
     max-width: 1024px;
-    margin: 5dvh auto 0;
+    margin: 5vh auto 0;
     display: flex;
     justify-content: space-between;
 

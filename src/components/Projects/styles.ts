@@ -146,7 +146,7 @@ export const Container = styled.div`
       height: auto;
       max-height: 50%; */
       max-width: auto;
-      max-height: 47.5dvh;
+      max-height: 47.5vh;
       object-fit: cover;
       margin: auto;
       margin-top: -3%;
@@ -350,7 +350,7 @@ export const Container = styled.div`
     display: flex;
     height: 100%;
     width: 100%;
-    padding-top: 22dvh;
+    padding-top: 22vh;
   }
 
   .content {
@@ -372,7 +372,7 @@ export const Container = styled.div`
 
   .nav-tipos {
     position: sticky;
-    top: 10dvh;
+    top: 10vh;
     display: flex;
     flex-direction: column;
     margin: 0;
@@ -421,7 +421,7 @@ export const Container = styled.div`
   }
 
   @media (max-width: 1344px) {
-    /* height: 110dvh; */
+    /* height: 110vh; */
 
     ///////////////////////////////////////////////////////////
 
@@ -432,7 +432,7 @@ export const Container = styled.div`
       display: flex;
       position: sticky;
       /* top: 60px; */
-      top: 8dvh;
+      top: 8vh;
       padding: 10px 0;
       /* margin-top: -34%; */
       margin-top: -60px;
@@ -471,7 +471,7 @@ export const Container = styled.div`
     }
 
     .content-wrapper {
-      padding-top: 28dvh;
+      padding-top: 28vh;
       flex-direction: column;
       height: 100%;
     }
@@ -519,7 +519,7 @@ export const Container = styled.div`
 
   @media (max-height: 680px) {
     .nav-tipos2 {
-      top: 9.5dvh;
+      top: 9.5vh;
     }
   }
 `

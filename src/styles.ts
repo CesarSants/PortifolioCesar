@@ -31,7 +31,7 @@ export const GlobalCss = createGlobalStyle`
       position: fixed;
       top: 0;
       left: 0;
-      width: 100dvw;
+      width: 100vw;
       height: 100vh;
       overflow: hidden;
       z-index: -1;
@@ -42,7 +42,7 @@ export const GlobalCss = createGlobalStyle`
 
       #tsparticles {
       position: absolute;
-      width: 100dvw;
+      width: 100vw;
       height: 100vh;
       overflow: hidden;
       opacity: 1;

@@ -2,7 +2,7 @@
 // import fundo from '../../assets/backGrounds/cinza-19.webp'
 
 // export const Container = styled.div`
-//   height: 100dvh;
+//   height: 100vh;
 //   background-image: url(${fundo});
 //   background-size: cover;
 //   background-position: center;
@@ -127,19 +127,19 @@ export const Container = styled.div`
     max-width: 1024px;
     width: 100%;
     height: 100%;
-    max-height: 100dvh;
+    max-height: 100vh;
     margin: 0 auto;
   }
 
   @media (max-width: 1024px) {
     .resume.resume2 {
-      max-height: 50dvh;
-      height: 50dvh;
-      margin-bottom: 1dvh;
+      max-height: 50vh;
+      height: 50vh;
+      margin-bottom: 1vh;
     }
 
     .resume.resume1 {
-      margin-bottom: 3dvh;
+      margin-bottom: 3vh;
     }
   }
 
@@ -151,9 +151,9 @@ export const Container = styled.div`
     position: relative;
     z-index: 0;
     border-radius: 40px;
-    max-height: 70dvh;
-    height: 70dvh;
-    margin-top: 16dvh;
+    max-height: 70vh;
+    height: 70vh;
+    margin-top: 16vh;
     p {
       padding: 0 20px;
     }
@@ -184,11 +184,11 @@ export const Container = styled.div`
       font-size: 18px;
       letter-spacing: 1.2px;
       line-height: 30px;
-      max-height: 40dvh;
-      height: 40dvh;
+      max-height: 40vh;
+      height: 40vh;
       position: relative;
-      margin-top: -15dvh;
-      margin-bottom: 8.5dvh;
+      margin-top: -15vh;
+      margin-bottom: 8.5vh;
       padding: 10px 0;
 
       .backgroundResume {
@@ -263,7 +263,7 @@ export const Container = styled.div`
     align-items: center;
     width: auto;
     z-index: 0;
-    margin-top: 16dvh;
+    margin-top: 16vh;
   }
 
   .complemento-sobre svg {
@@ -295,7 +295,7 @@ export const Container = styled.div`
       margin-top: -20px;
       display: flex;
       width: 100%;
-      height: 40dvh;
+      height: 40vh;
       overflow: visible;
 
       svg {
@@ -304,12 +304,12 @@ export const Container = styled.div`
     }
 
     .complemento-sobre {
-      margin-top: 20dvh;
+      margin-top: 20vh;
     }
 
     .complemento-sobre svg {
       width: auto;
-      height: 40dvh;
+      height: 40vh;
     }
 
     .svg-image {
@@ -320,7 +320,7 @@ export const Container = styled.div`
       img {
         margin-top: 2px;
         margin-left: -49px;
-        height: 30dvh;
+        height: 30vh;
         width: auto;
       }
     }
@@ -408,17 +408,17 @@ export const Container = styled.div`
       .tec {
         display: flex;
         flex-wrap: wrap;
-        margin-top: 3dvh;
+        margin-top: 3vh;
         width: 90%;
-        height: 20dvh;
-        gap: 1dvh 1dvw;
+        height: 20vh;
+        gap: 1vh 1dvw;
         justify-content: center;
-        margin: 3dvh auto 0;
+        margin: 3vh auto 0;
 
         .grid-item {
           flex: 0 0 calc((100% - 11dvw) / 12); /* 12 colunas com 11 gaps de 1dvw */
           width: 7dvw;
-          height: 7dvh;
+          height: 7vh;
           gap: 0;
 
           img {

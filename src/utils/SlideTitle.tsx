@@ -56,8 +56,8 @@ const HeadlineWrapper = styled.div<{
 
   span {
     font-family: ${fonts.fontGrande};
-    font-size: 10dvh;
-    margin-top: 1dvh;
+    font-size: 10vh;
+    margin-top: 1vh;
     text-transform: uppercase;
     display: flex;
     align-items: center;
@@ -96,8 +96,8 @@ const HeadlineWrapper = styled.div<{
 
   .headline-scroll span {
     font-family: ${fonts.fontGrande};
-    font-size: 10dvh;
-    margin-top: 1dvh;
+    font-size: 10vh;
+    margin-top: 1vh;
     text-transform: uppercase;
     display: flex;
     align-items: center;
