@@ -74,51 +74,122 @@ const HeadlineScroll: React.FC<Props> = ({
 
     if (!baseHTMLRef.current) baseHTMLRef.current = track.innerHTML
 
+    // mede largura incluindo margens
+    const widthWithMargin = (el: HTMLElement) => {
+      const styles = window.getComputedStyle(el)
+      const ml = parseFloat(styles.marginLeft) || 0
+      const mr = parseFloat(styles.marginRight) || 0
+      return el.getBoundingClientRect().width + ml + mr
+    }
+
+    // cria um "bloco" que agrupa uma repetição inteira do HTML (um filho do track)
+    const createBlockElement = () => {
+      const block = document.createElement('div')
+      // estilo inline para garantir que o bloco seja inline e não quebre layout
+      block.style.display = 'inline-flex'
+      block.style.alignItems = 'center'
+      block.style.whiteSpace = 'nowrap'
+      block.style.flex = 'none'
+      block.innerHTML = baseHTMLRef.current || ''
+      return block
+    }
+
     const build = () => {
       if (!baseHTMLRef.current) return
 
-      // Limpa track
+      // limpa track visível
       track.innerHTML = ''
       track.style.transform = 'translate3d(0,0,0)'
+      offsetRef.current = 0
 
-      // Cria 1x do conteúdo para medir largura
-      const tmpDiv = document.createElement('div')
-      tmpDiv.innerHTML = baseHTMLRef.current
-      while (tmpDiv.firstChild) track.appendChild(tmpDiv.firstChild)
-
-      const baseWidth = track.scrollWidth
-      baseWidthRef.current = baseWidth
       const containerWidth = wrapper.clientWidth
 
-      // Repetir o mínimo necessário para cobrir a tela + folga
-      const repeats = Math.ceil(containerWidth / baseWidth) + 2
-      for (let i = 1; i < repeats; i++) {
-        const clone = track.cloneNode(true) as HTMLDivElement
-        Array.from(clone.children).forEach((child) =>
-          (child as HTMLElement).setAttribute('aria-hidden', 'true')
-        )
-        track.appendChild(clone)
+      // --- OFFSCREEN: pré-renderiza blocos fora da viewport para forçar layout/pintura ---
+      const off = document.createElement('div')
+      off.style.position = 'absolute'
+      off.style.left = '-99999px'
+      off.style.top = '0'
+      off.style.visibility = 'hidden'
+      off.style.whiteSpace = 'nowrap'
+      off.style.display = 'flex'
+      off.style.flexWrap = 'nowrap'
+
+      // Primeiro, cria 1 bloco para medir baseWidth
+      const sample = createBlockElement()
+      off.appendChild(sample)
+      document.body.appendChild(off)
+      // força reflow para garantir medida estável (útil em mobile)
+      const sampleWidth =
+        sample.getBoundingClientRect().width ||
+        sample.offsetWidth ||
+        off.scrollWidth
+      baseWidthRef.current = sampleWidth
+
+      // calcula quantas repetições precisamos (cobertura segura)
+      // garantimos pelo menos 3× a largura do container ou container/baseWidth + 4
+      const repeats = Math.max(
+        Math.ceil((containerWidth * 3) / Math.max(1, sampleWidth)),
+        Math.ceil(containerWidth / Math.max(1, sampleWidth)) + 4
+      )
+
+      // substitui off por N blocos (já fora da viewport)
+      off.innerHTML = ''
+      for (let i = 0; i < repeats; i++) {
+        const b = createBlockElement()
+        off.appendChild(b)
       }
 
-      offsetRef.current =
-        ((offsetRef.current % baseWidth) + baseWidth) % baseWidth
-      offsetRef.current *= -1
-      track.style.transform = `translate3d(${offsetRef.current}px,0,0)`
+      // força layout/pintura do offscreen (garante que os nós tenham layout calculado)
+      off.getBoundingClientRect()
+
+      // clona os nós já renderizados para o track visível (cloneNode para não remover off)
+      const frag = document.createDocumentFragment()
+      Array.from(off.children).forEach((child) => {
+        const cloned = (child as HTMLElement).cloneNode(true) as HTMLElement
+        cloned.setAttribute('aria-hidden', 'true')
+        frag.appendChild(cloned)
+      })
+
+      track.appendChild(frag)
+
+      // remove offscreen
+      document.body.removeChild(off)
+
+      // define baseWidth definitivo a partir do primeiro bloco no track
+      const first = track.firstElementChild as HTMLElement | null
+      if (first) {
+        baseWidthRef.current = widthWithMargin(first)
+      }
+
+      // garante estado inicial
+      offsetRef.current = 0
+      track.style.transform = `translate3d(0,0,0)`
     }
 
+    // animação com reciclagem de blocos inteiros (sem gaps, sem teleporte perceptível)
     const step = (ts: number) => {
-      const baseWidth = baseWidthRef.current
-      if (!baseWidth) {
-        rafIdRef.current = requestAnimationFrame(step)
-        return
-      }
-
       if (lastTsRef.current == null) lastTsRef.current = ts
       const dt = (ts - lastTsRef.current) / 1000
       lastTsRef.current = ts
 
       let offset = offsetRef.current - speed * dt
-      if (offset <= -baseWidth) offset += baseWidth
+
+      // recicla o primeiro bloco enquanto ele já saiu totalmente da viewport
+      // e compensa o offset pelo tamanho real desse bloco.
+      // usamos um guard para evitar loop infinito em situações estranhas.
+      let guard = 0
+      while (guard++ < 100) {
+        const first = track.firstElementChild as HTMLElement | null
+        if (!first) break
+        const w = widthWithMargin(first)
+        if (-offset >= w) {
+          // compensa offset e move o bloco para o fim
+          offset += w
+          track.appendChild(first)
+        } else {
+          break
+        }
+      }
 
       offsetRef.current = offset
       track.style.transform = `translate3d(${offset}px,0,0)`
@@ -133,9 +204,10 @@ const HeadlineScroll: React.FC<Props> = ({
 
     const rebuildAndStart = () => {
       build()
-      // Garante layout final e fontes carregadas
+      // garante layout final e pintura no mobile antes de iniciar
       requestAnimationFrame(() =>
         requestAnimationFrame(() => {
+          // rebuild final e start
           build()
           start()
         })
@@ -147,7 +219,7 @@ const HeadlineScroll: React.FC<Props> = ({
       fReady.then(rebuildAndStart).catch(rebuildAndStart)
     else rebuildAndStart()
 
-    // Rebuild só se mudar largura ou girar tela
+    // Rebuild só quando largura realmente mudar
     let lastWidth = wrapper.clientWidth
     const ro = new ResizeObserver(() => {
       const w = wrapper.clientWidth
