@@ -20,6 +20,8 @@ export const GlobalCss = createGlobalStyle`
     padding: 0;
     box-sizing: border-box;
     font-family: ${fonts.fontPequena};
+    scrollbar-width: initial !important;
+    scrollbar-color: initial !important;
   }
 
   html {
