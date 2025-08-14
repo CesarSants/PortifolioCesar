@@ -85,7 +85,7 @@ const HeadlineScroll: React.FC<Props> = ({ content, height = '20%' }) => {
       const containerWidth = wrapper.clientWidth
 
       // 🔹 Agora garantimos pelo menos 3× a largura da tela
-      while (track.scrollWidth < containerWidth * 5) {
+      while (track.scrollWidth < containerWidth * 10) {
         const tmp = document.createElement('div')
         tmp.innerHTML = baseHTMLRef.current
         while (tmp.firstChild) {
@@ -129,13 +129,7 @@ const HeadlineScroll: React.FC<Props> = ({ content, height = '20%' }) => {
 
     const rebuildAndStart = () => {
       build()
-      // Garante que fontes + layout final sejam calculados
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          build()
-          start()
-        })
-      })
+      start()
     }
 
     const fReady = (document as any).fonts?.ready
