@@ -129,7 +129,13 @@ const HeadlineScroll: React.FC<Props> = ({ content, height = '20%' }) => {
 
     const rebuildAndStart = () => {
       build()
-      start()
+      // Garante que fontes + layout final sejam calculados
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          build()
+          start()
+        })
+      })
     }
 
     const fReady = (document as any).fonts?.ready
