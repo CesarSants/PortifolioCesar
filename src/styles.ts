@@ -25,18 +25,18 @@ export const GlobalCss = createGlobalStyle`
   }
 
   html {
-    scrollbar-width: thin;
-    scrollbar-color: rgba(179, 125, 167, 0.6) transparent;
+    scrollbar-width: thin !important;
+    scrollbar-color: rgba(179, 125, 167, 0.6) transparent !important;
 
     &::-webkit-scrollbar {
-      width: 6px;
+      width: 6px !important;
     }
     &::-webkit-scrollbar-thumb {
-      background-color: rgba(100, 100, 100, 0.6);
-      border-radius: 4px;
+      background-color: rgba(100, 100, 100, 0.6) !important;
+      border-radius: 4px !important;
     }
     &::-webkit-scrollbar-track {
-      background: transparent;
+      background: transparent !important;
     }
   }
 
