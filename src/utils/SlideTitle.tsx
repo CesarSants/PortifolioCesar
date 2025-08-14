@@ -22,16 +22,6 @@ const HeadlineWrapper = styled.div<{ height: string }>`
     align-items: center;
     white-space: nowrap;
     will-change: transform;
-    animation: scroll var(--scroll-duration, 35s) linear infinite;
-  }
-
-  @keyframes scroll {
-    from {
-      transform: translate3d(0, 0, 0);
-    }
-    to {
-      transform: translate3d(calc(var(--scroll-distance, 0px) * -1), 0, 0);
-    }
   }
 
   .headline-scroll span {
@@ -62,72 +52,102 @@ const HeadlineWrapper = styled.div<{ height: string }>`
   }
 `
 
-const SPEED_PX_PER_S = 120
+const SPEED_PX_PER_S = 80
 
 const HeadlineScroll: React.FC<Props> = ({ content, height = '20%' }) => {
   const wrapperRef = useRef<HTMLDivElement>(null)
   const trackRef = useRef<HTMLDivElement>(null)
   const baseHTMLRef = useRef<string | null>(null)
 
+  const rafIdRef = useRef<number | null>(null)
+  const lastTsRef = useRef<number | null>(null)
+  const offsetRef = useRef(0)
+  const baseWidthRef = useRef(0)
+
   useEffect(() => {
     const wrapper = wrapperRef.current
     const track = trackRef.current
     if (!wrapper || !track) return
 
-    if (!baseHTMLRef.current) baseHTMLRef.current = track.innerHTML
+    if (!baseHTMLRef.current) {
+      baseHTMLRef.current = track.innerHTML
+    }
 
     const build = () => {
       if (!baseHTMLRef.current) return
 
-      track.style.animation = 'none'
       track.innerHTML = baseHTMLRef.current
+      track.style.transform = 'translate3d(0,0,0)'
 
       const baseWidth = track.scrollWidth
+      baseWidthRef.current = baseWidth
+
       const containerWidth = wrapper.clientWidth
 
-      // Garantir cobertura de 2 blocos + largura da tela
-      const needed = baseWidth * 2 + containerWidth
-      let current = baseWidth
-
-      while (current < needed) {
-        const clone = document.createElement('div')
-        clone.innerHTML = baseHTMLRef.current
-        while (clone.firstChild) {
-          const node = clone.firstChild as HTMLElement
+      // 🔹 Agora garantimos pelo menos 3× a largura da tela
+      while (track.scrollWidth < containerWidth * 5) {
+        const tmp = document.createElement('div')
+        tmp.innerHTML = baseHTMLRef.current
+        while (tmp.firstChild) {
+          const node = tmp.firstChild as HTMLElement
           node.setAttribute('aria-hidden', 'true')
           track.appendChild(node)
         }
-        current = track.scrollWidth
       }
 
-      const duration = Math.max(
-        1,
-        Math.round((baseWidth / SPEED_PX_PER_S) * 100) / 100
-      )
-
-      track.style.setProperty('--scroll-distance', `${baseWidth}px`)
-      track.style.setProperty('--scroll-duration', `${duration}s`)
-
-      void track.offsetHeight
-      track.style.removeProperty('animation')
+      offsetRef.current =
+        ((offsetRef.current % baseWidth) + baseWidth) % baseWidth
+      offsetRef.current *= -1
+      track.style.transform = `translate3d(${offsetRef.current}px,0,0)`
     }
 
-    const fontsReady = (document as any).fonts?.ready
-    if (fontsReady && 'then' in fontsReady) {
-      fontsReady.then(build).catch(build)
-    } else {
+    const step = (ts: number) => {
+      const baseWidth = baseWidthRef.current
+      if (!baseWidth) {
+        rafIdRef.current = requestAnimationFrame(step)
+        return
+      }
+      if (lastTsRef.current == null) lastTsRef.current = ts
+      const dt = (ts - lastTsRef.current) / 1000
+      lastTsRef.current = ts
+
+      let offset = offsetRef.current - SPEED_PX_PER_S * dt
+      if (offset <= -baseWidth) {
+        offset += baseWidth
+      }
+
+      offsetRef.current = offset
+      track.style.transform = `translate3d(${offset}px,0,0)`
+      rafIdRef.current = requestAnimationFrame(step)
+    }
+
+    const start = () => {
+      if (rafIdRef.current != null) cancelAnimationFrame(rafIdRef.current)
+      lastTsRef.current = null
+      rafIdRef.current = requestAnimationFrame(step)
+    }
+
+    const rebuildAndStart = () => {
       build()
+      start()
+    }
+
+    const fReady = (document as any).fonts?.ready
+    if (fReady && 'then' in fReady) {
+      fReady.then(rebuildAndStart).catch(rebuildAndStart)
+    } else {
+      rebuildAndStart()
     }
 
     const ro = new ResizeObserver(build)
     ro.observe(wrapper)
 
-    const onOrientation = () => build()
-    window.addEventListener('orientationchange', onOrientation)
+    window.addEventListener('orientationchange', build, { passive: true })
 
     return () => {
       ro.disconnect()
-      window.removeEventListener('orientationchange', onOrientation)
+      window.removeEventListener('orientationchange', build)
+      if (rafIdRef.current != null) cancelAnimationFrame(rafIdRef.current)
     }
   }, [])
 
@@ -140,14 +160,6 @@ const HeadlineScroll: React.FC<Props> = ({ content, height = '20%' }) => {
       data-aos-duration="1000"
     >
       <div ref={trackRef} className="headline-scroll">
-        <span className="bold">{content}</span>
-        <span className="divisor"></span>
-        <span className="light">{content}</span>
-        <span className="divisor"></span>
-        <span className="bold">{content}</span>
-        <span className="divisor"></span>
-        <span className="light">{content}</span>
-        <span className="divisor"></span>
         <span className="bold">{content}</span>
         <span className="divisor"></span>
         <span className="light">{content}</span>

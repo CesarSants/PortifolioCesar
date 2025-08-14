@@ -22,6 +22,22 @@ export const GlobalCss = createGlobalStyle`
     font-family: ${fonts.fontPequena};
   }
 
+  html {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(179, 125, 167, 0.6) transparent;
+
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background-color: rgba(100, 100, 100, 0.6);
+      border-radius: 4px;
+    }
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+  }
+
   body{
     background-color: ${cores.preta};
     color: ${cores.branca};
