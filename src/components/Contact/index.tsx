@@ -5,8 +5,9 @@ import HeadlineScroll from '../../utils/SlideTitle'
 import emailjs from '@emailjs/browser'
 import * as Yup from 'yup'
 import { useFormik } from 'formik'
-import { toast, ToastContainer } from 'react-toastify'
+import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import Toast from '../Toast'
 import wpp from '../../assets/images/wpp.png'
 import gmail from '../../assets/images/gmail.png'
 import linkedin from '../../assets/images/linkedin.png'
@@ -14,6 +15,7 @@ import github from '../../assets/tec/github.png'
 
 const Contact = () => {
   const [toastId, setToastId] = useState<string | number | null>(null)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   // const serviceId = process.env.REACT_APP_SERVICE_ID
   // const templateId = process.env.REACT_APP_TEMPLATE_ID
@@ -100,175 +102,189 @@ const Contact = () => {
         .required('O campo é obrigatório'),
       message: Yup.string().required('O campo é obrigatório')
     }),
-    onSubmit: (values, { resetForm }) => {
-      emailjs
-        .send(serviceID, templateID, values, publicKey)
-        .then(() => {
-          alertSuccess()
-          resetForm()
-        })
-        .catch(() => {
-          alertError('Ocorreu um erro ao enviar sua mensagem. Tente novamente.')
-        })
+    onSubmit: async (values, { resetForm }) => {
+      setIsSubmitting(true)
+      try {
+        await emailjs.send(serviceID, templateID, values, publicKey)
+        alertSuccess()
+        resetForm()
+      } catch (error) {
+        alertError('Ocorreu um erro ao enviar sua mensagem. Tente novamente.')
+      } finally {
+        setIsSubmitting(false)
+      }
     }
   })
 
   return (
-    <Container id="contact">
-      <ToastContainer containerId="contactToast" />
-      <div className="background">
-        <img src={fundo} alt="Fundo" />
-      </div>
-      <HeadlineScroll content="contato" height="28%" />
-      <div className="contentWrapper">
-        <div
-          className="content"
-          data-aos="fade-up"
-          data-aos-duration="2000"
-          data-aos-delay="300"
-        >
-          <div className="socialMedias">
-            <h1>Redes sociais</h1>
+    <>
+      <Toast />
+      <Container id="contact">
+        <div className="background">
+          <img src={fundo} alt="Fundo" />
+        </div>
+        <HeadlineScroll content="contato" height="28%" />
+        <div className="contentWrapper">
+          <div
+            className="content"
+            data-aos="fade-up"
+            data-aos-duration="2000"
+            data-aos-delay="300"
+          >
+            <div className="socialMedias">
+              <h1>Redes sociais</h1>
+              <div className="mediaContainer">
+                <div className="media">
+                  <a
+                    href="https://wa.me/5519988481818"
+                    target="_blank"
+                    rel="noreferrer"
+                    title="WhatsApp"
+                  >
+                    <img src={wpp} alt="Ícone do WhatsApp" />
+                  </a>
+                </div>
 
-            <div className="mediaContainer">
-              <div className="media">
-                <a
-                  href="https://wa.me/5519988481818"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <img src={wpp} alt="" />
-                </a>
-              </div>
-
-              <div className="media">
-                <a
-                  href="https://mail.google.com/mail/?view=cm&fs=1&to=cesarsantosdeveloper@gmail.com&su=Assunto&body=Mensagem"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <img src={gmail} alt="" />
-                </a>
-              </div>
-              <div className="media">
-                <a
-                  href="https://www.linkedin.com/in/cesar-santos-dev"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <img src={linkedin} alt="" />
-                </a>
-              </div>
-              <div className="media">
-                <a
-                  href="https://github.com/CesarSants"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <img src={github} alt="" />
-                </a>
+                <div className="media">
+                  <a
+                    href="https://mail.google.com/mail/?view=cm&fs=1&to=cesarsantosdeveloper@gmail.com&su=Assunto&body=Mensagem"
+                    target="_blank"
+                    rel="noreferrer"
+                    title="E-mail"
+                  >
+                    <img src={gmail} alt="Ícone do Gmail" />
+                  </a>
+                </div>
+                <div className="media">
+                  <a
+                    href="https://www.linkedin.com/in/cesar-santos-dev"
+                    target="_blank"
+                    rel="noreferrer"
+                    title="LinkedIn"
+                  >
+                    <img src={linkedin} alt="Ícone do LinkedIn" />
+                  </a>
+                </div>
+                <div className="media">
+                  <a
+                    href="https://github.com/CesarSants"
+                    target="_blank"
+                    rel="noreferrer"
+                    title="GitHub"
+                  >
+                    <img src={github} alt="Ícone do GitHub" />
+                  </a>
+                </div>
               </div>
             </div>
-          </div>
-          <form className="form" onSubmit={formik.handleSubmit}>
-            <InputGroup>
-              <div className="group">
-                <label htmlFor="name">Digite o seu nome:</label>
-                <input
-                  type="text"
-                  id="name"
-                  value={formik.values.name}
-                  onChange={(e) =>
-                    formik.setFieldValue(
-                      'name',
-                      formatOnlyLetters(e.target.value)
-                    )
-                  }
-                  onBlur={formik.handleBlur}
-                  className={
-                    formik.errors.name && formik.touched.name ? 'error' : ''
-                  }
-                />
-              </div>
-              {formik.errors.name && formik.touched.name && (
-                <small>{formik.errors.name}</small>
-              )}
-            </InputGroup>
-            <InputGroup>
-              <div className="group">
-                <label htmlFor="email">Digite o seu E-mail: </label>
-                <input
-                  type="email"
-                  id="email"
-                  value={formik.values.email}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  className={
-                    formik.errors.email && formik.touched.email ? 'error' : ''
-                  }
-                />
-              </div>
+            <form className="form" onSubmit={formik.handleSubmit}>
+              <InputGroup>
+                <div className="group">
+                  <label htmlFor="name">Digite o seu nome:</label>
+                  <input
+                    type="text"
+                    id="name"
+                    value={formik.values.name}
+                    onChange={(e) =>
+                      formik.setFieldValue(
+                        'name',
+                        formatOnlyLetters(e.target.value)
+                      )
+                    }
+                    onBlur={formik.handleBlur}
+                    className={
+                      formik.errors.name && formik.touched.name ? 'error' : ''
+                    }
+                  />
+                </div>
+                {formik.errors.name && formik.touched.name && (
+                  <small>{formik.errors.name}</small>
+                )}
+              </InputGroup>
+              <InputGroup>
+                <div className="group">
+                  <label htmlFor="email">Digite o seu E-mail: </label>
+                  <input
+                    type="email"
+                    id="email"
+                    value={formik.values.email}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    className={
+                      formik.errors.email && formik.touched.email ? 'error' : ''
+                    }
+                  />
+                </div>
 
-              {formik.errors.email && formik.touched.email && (
-                <small>{formik.errors.email}</small>
-              )}
-            </InputGroup>
-            <InputGroup>
-              <div className="group">
-                <label htmlFor="tel">Digite o seu telefone:</label>
-                <input
-                  type="tel"
-                  id="tel"
-                  value={formik.values.tel}
-                  onChange={(e) =>
-                    formik.setFieldValue(
-                      'tel',
-                      formatPhoneNumber(e.target.value)
-                    )
-                  }
-                  onBlur={formik.handleBlur}
-                  className={
-                    formik.errors.tel && formik.touched.tel ? 'error' : ''
-                  }
-                />
-              </div>
-              {formik.errors.tel && formik.touched.tel && (
-                <small>{formik.errors.tel}</small>
-              )}
-            </InputGroup>
-            <InputGroup>
-              <div className="group">
-                <label htmlFor="message">Mensagem:</label>
-                <textarea
-                  id="message"
-                  value={formik.values.message}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  className={
-                    formik.errors.message && formik.touched.message
-                      ? 'error'
-                      : ''
-                  }
-                ></textarea>
-              </div>
-              {formik.errors.message && formik.touched.message && (
-                <small>{formik.errors.message}</small>
-              )}
-            </InputGroup>
-            <button className="cta" type="submit" rel="noreferrer">
-              <span>Enviar</span>
-              <svg width="15px" height="10px" viewBox="0 0 13 10">
-                <path d="M1,5 L11,5"></path>
-                <polyline points="8 1 12 5 8 9"></polyline>
-              </svg>
-            </button>
-          </form>
+                {formik.errors.email && formik.touched.email && (
+                  <small>{formik.errors.email}</small>
+                )}
+              </InputGroup>
+              <InputGroup>
+                <div className="group">
+                  <label htmlFor="tel">Digite o seu telefone:</label>
+                  <input
+                    type="tel"
+                    id="tel"
+                    value={formik.values.tel}
+                    onChange={(e) =>
+                      formik.setFieldValue(
+                        'tel',
+                        formatPhoneNumber(e.target.value)
+                      )
+                    }
+                    onBlur={formik.handleBlur}
+                    className={
+                      formik.errors.tel && formik.touched.tel ? 'error' : ''
+                    }
+                  />
+                </div>
+                {formik.errors.tel && formik.touched.tel && (
+                  <small>{formik.errors.tel}</small>
+                )}
+              </InputGroup>
+              <InputGroup>
+                <div className="group">
+                  <label htmlFor="message">Mensagem:</label>
+                  <textarea
+                    id="message"
+                    value={formik.values.message}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    className={
+                      formik.errors.message && formik.touched.message
+                        ? 'error'
+                        : ''
+                    }
+                  ></textarea>
+                </div>
+                {formik.errors.message && formik.touched.message && (
+                  <small>{formik.errors.message}</small>
+                )}
+              </InputGroup>
+              <button
+                className={`cta ${isSubmitting ? 'submitting' : ''}`}
+                type="submit"
+                disabled={
+                  isSubmitting ||
+                  (formik.touched.email &&
+                    Object.keys(formik.errors).length > 0)
+                }
+              >
+                <span>{isSubmitting ? 'Enviando...' : 'Enviar'}</span>
+                <svg width="15px" height="10px" viewBox="0 0 13 10">
+                  <path d="M1,5 L11,5"></path>
+                  <polyline points="8 1 12 5 8 9"></polyline>
+                </svg>
+              </button>
+            </form>
+          </div>
+          <footer className="footer">
+            <p>Todos os direitos reservados | Desenvolvido por Cesar Santos</p>
+          </footer>
         </div>
-        <footer className="footer">
-          <p>Todos os direitos reservados | Desenvolvido por Cesar Santos</p>
-        </footer>
-      </div>
-    </Container>
+      </Container>
+    </>
   )
 }
 

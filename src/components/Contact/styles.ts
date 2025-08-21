@@ -198,20 +198,40 @@ export const Container = styled.div`
         transition: all 0.3s ease;
       }
 
-      .cta:hover:before {
+      .cta:not(:disabled):hover:before {
         width: 100%;
         background: linear-gradient(to right, #186670, #b37da7);
         height: 45px;
       }
 
-      .cta:hover svg {
+      .cta:not(:disabled):hover svg {
         transform: translateX(0);
         stroke: #e7fc00;
         stroke-width: 3;
       }
 
-      .cta:active {
+      .cta:not(:disabled):active {
         transform: scale(0.95);
+      }
+
+      .cta.submitting,
+      .cta:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+
+        &:before {
+          background: linear-gradient(to right, #666, #999);
+          width: 100%;
+          height: 45px;
+        }
+
+        &:hover:before {
+          background: linear-gradient(to right, #666, #999);
+        }
+
+        svg {
+          opacity: 0.5;
+        }
       }
     }
   }

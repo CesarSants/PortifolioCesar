@@ -45,6 +45,30 @@ export const GlobalCss = createGlobalStyle`
     color: ${cores.branca};
     overflow-x: hidden;
 
+    .Toastify__toast-container {
+      position: fixed !important;
+      z-index: 9999999 !important;
+      top: 1rem !important;
+      right: 1rem !important;
+      width: auto !important;
+      min-width: 300px !important;
+      max-width: 600px !important;
+      pointer-events: auto !important;
+    }
+
+    .Toastify__toast {
+      background-color: ${cores.cinza} !important;
+      color: ${cores.branca} !important;
+      font-family: ${fonts.fontPequena} !important;
+      font-size: 16px !important;
+      border-radius: 8px !important;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+    }
+
+    .Toastify__toast-body {
+      padding: 12px !important;
+    }
+
     .particlesContainer{
       position: fixed;
       top: 0;

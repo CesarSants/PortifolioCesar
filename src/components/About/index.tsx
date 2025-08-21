@@ -110,7 +110,8 @@ const About = () => {
                 <br />
                 Sou um profissional em transição de carreira para a área de
                 tecnologia. Desenvolvedor full-stack Java formado pela EBAC –
-                Escola Britânica de Artes Criativas e Tecnologia.
+                Escola Britânica de Artes Criativas e Tecnologia. Atualmente
+                curso Engenharia de Software pela Uninter.
                 <br />
                 <br />
                 Tenho um perfil organizado e meticuloso, gosto de que as coisas

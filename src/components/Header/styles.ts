@@ -145,13 +145,13 @@ export const Head = styled.header`
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    gap: 4rem;
+    justify-content: space-evenly;
+    gap: min(4rem, 8.5vh);
     transition: opacity 0.5s ease-in-out;
     position: absolute;
-    padding-bottom: 16px;
-    padding-top: 15rem;
-    top: 0;
+    padding: min(4rem, 4vh) 0;
+    top: 50%;
+    transform: translateY(-50%);
   }
 
   .nav-menu a {
