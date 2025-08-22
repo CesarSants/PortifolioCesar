@@ -15,6 +15,7 @@ import Navigation from './components/Navigation'
 import Contact from './components/Contact'
 import { BrowserRouter, BrowserRouter as Router } from 'react-router-dom'
 import ScrollOnLoad from './utils/ScrollOnLoad'
+import ViewportScrollFix from './components/ViewportScrollFix'
 
 const App = () => {
   useEffect(() => {
@@ -27,15 +28,17 @@ const App = () => {
         {/* <ScrollOnLoad /> */}
         <GlobalCss />
         <Particles />
-        <Header />
-        <Navigation />
-        <Container>
-          <Home />
-          <About />
-          <Projects />
-          <Repositories />
-          <Contact />
-        </Container>
+        <ViewportScrollFix>
+          <Header />
+          <Navigation />
+          <Container>
+            <Home />
+            <About />
+            <Projects />
+            <Repositories />
+            <Contact />
+          </Container>
+        </ViewportScrollFix>
       </BrowserRouter>
     </Provider>
   )
