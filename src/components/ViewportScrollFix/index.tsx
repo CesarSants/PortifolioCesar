@@ -11,11 +11,8 @@ const ViewportScrollFix: React.FC<ViewportScrollFixProps> = ({ children }) => {
     totalHeight,
     isAdjusting,
     userPosition,
-    userRelativePosition,
-    resetHeightCompensation
+    userRelativePosition
   } = useViewportHeight()
-  const [testMode, setTestMode] = useState(false)
-  const [currentPaddingTop, setCurrentPaddingTop] = useState(0)
 
   useEffect(() => {
     if (process.env.NODE_ENV === 'development') {
@@ -34,21 +31,6 @@ const ViewportScrollFix: React.FC<ViewportScrollFixProps> = ({ children }) => {
     userRelativePosition,
     isAdjusting
   ])
-
-  // Monitora mudanças no padding-top do body
-  useEffect(() => {
-    const checkPaddingTop = () => {
-      const paddingTop =
-        parseInt(getComputedStyle(document.body).paddingTop) || 0
-      setCurrentPaddingTop(paddingTop)
-    }
-
-    // Verifica a cada 100ms
-    const interval = setInterval(checkPaddingTop, 100)
-    checkPaddingTop() // Verifica imediatamente
-
-    return () => clearInterval(interval)
-  }, [])
 
   const forceTest = () => {
     const testDiv = document.createElement('div')
@@ -101,66 +83,32 @@ const ViewportScrollFix: React.FC<ViewportScrollFixProps> = ({ children }) => {
             }}
           >
             <div style={{ marginBottom: '3px', fontWeight: 'bold' }}>
-              {isAdjusting ? '🔄 COMPENSANDO ALTURA' : '✅ OK'}
+              {isAdjusting ? '🔄 MANTENDO POSIÇÃO' : '✅ OK'}
             </div>
             <div>VH: {currentHeight}px</div>
             <div>TH: {totalHeight}px</div>
             <div>UP: {userPosition}px</div>
             <div>URP: {userRelativePosition.toFixed(1)}%</div>
-            <div
-              style={{
-                marginTop: '5px',
-                padding: '2px 4px',
-                background: 'rgba(255,255,255,0.2)',
-                borderRadius: '3px',
-                fontSize: '10px'
-              }}
-            >
-              Padding-Top: {currentPaddingTop}px
-            </div>
           </div>
 
-          <div
+          <button
+            onClick={forceTest}
             style={{
               position: 'fixed',
               top: '120px',
               right: '10px',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '5px',
-              zIndex: 9999
+              background: 'blue',
+              color: 'white',
+              border: 'none',
+              padding: '6px 10px',
+              borderRadius: '4px',
+              fontSize: '11px',
+              zIndex: 9999,
+              cursor: 'pointer'
             }}
           >
-            <button
-              onClick={forceTest}
-              style={{
-                background: 'blue',
-                color: 'white',
-                border: 'none',
-                padding: '6px 10px',
-                borderRadius: '4px',
-                fontSize: '11px',
-                cursor: 'pointer'
-              }}
-            >
-              Testar Mudança
-            </button>
-
-            <button
-              onClick={resetHeightCompensation}
-              style={{
-                background: 'orange',
-                color: 'white',
-                border: 'none',
-                padding: '6px 10px',
-                borderRadius: '4px',
-                fontSize: '11px',
-                cursor: 'pointer'
-              }}
-            >
-              Resetar Compensação
-            </button>
-          </div>
+            Testar Mudança
+          </button>
         </>
       )}
 
