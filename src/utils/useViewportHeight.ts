@@ -2,29 +2,26 @@ import { useEffect, useRef, useCallback, useState } from 'react'
 
 interface ScrollState {
   lastScrollTop: number
+  lastTotalHeight: number
   lastViewportHeight: number
-  lastDocumentHeight: number
   isAdjusting: boolean
   lastAdjustmentTime: number
-  scrollHistory: number[]
-  lastScrollTime: number
-  originalScrollTop: number
+  userRelativePosition: number
 }
 
 export const useViewportHeight = () => {
   const [currentHeight, setCurrentHeight] = useState(0)
-  const [documentHeight, setDocumentHeight] = useState(0)
+  const [totalHeight, setTotalHeight] = useState(0)
   const [isAdjusting, setIsAdjusting] = useState(false)
+  const [userPosition, setUserPosition] = useState(0)
 
   const stateRef = useRef<ScrollState>({
     lastScrollTop: 0,
+    lastTotalHeight: 0,
     lastViewportHeight: 0,
-    lastDocumentHeight: 0,
     isAdjusting: false,
     lastAdjustmentTime: 0,
-    scrollHistory: [],
-    lastScrollTime: 0,
-    originalScrollTop: 0
+    userRelativePosition: 0
   })
 
   const getViewportHeight = useCallback(() => {
@@ -38,203 +35,171 @@ export const useViewportHeight = () => {
     return window.pageYOffset || document.documentElement.scrollTop
   }, [])
 
-  const getDocumentHeight = useCallback(() => {
+  const getTotalHeight = useCallback(() => {
     return document.documentElement.scrollHeight
   }, [])
 
-  const detectAbnormalScroll = useCallback(
-    (currentScroll: number, previousScroll: number, currentTime: number) => {
-      // Detecta mudanças anormais de scroll (pulos automáticos)
-      const scrollDifference = Math.abs(currentScroll - previousScroll)
-      const timeDifference = currentTime - stateRef.current.lastScrollTime
+  const calculateUserRelativePosition = useCallback(
+    (scrollTop: number, totalHeight: number, viewportHeight: number) => {
+      // Calcula a posição relativa do usuário em porcentagem
+      const maxScroll = Math.max(0, totalHeight - viewportHeight)
 
-      // Se a mudança de scroll for muito grande em pouco tempo, é suspeita
-      if (scrollDifference > 50 && timeDifference < 50) {
-        return true
-      }
+      if (maxScroll === 0) return 0
 
-      // Se a mudança for maior que 30% da viewport, é suspeita
-      const viewportHeight = getViewportHeight()
-      if (scrollDifference > viewportHeight * 0.3) {
-        return true
-      }
-
-      return false
+      // Retorna a posição em porcentagem (0 a 100)
+      return (scrollTop / maxScroll) * 100
     },
-    [getViewportHeight]
+    []
+  )
+
+  const applyCompensation = useCallback(
+    (
+      relativePosition: number,
+      newTotalHeight: number,
+      newViewportHeight: number
+    ) => {
+      // Calcula a nova posição baseada na posição relativa
+      const maxScroll = Math.max(0, newTotalHeight - newViewportHeight)
+      const targetScroll = (relativePosition / 100) * maxScroll
+
+      // Aplica a compensação
+      window.scrollTo({
+        top: targetScroll,
+        behavior: 'auto'
+      })
+    },
+    []
   )
 
   const handleScroll = useCallback(() => {
     const currentScroll = getScrollPosition()
+    const currentTotalHeight = getTotalHeight()
     const currentViewportHeight = getViewportHeight()
-    const currentDocumentHeight = getDocumentHeight()
     const now = Date.now()
 
     // Atualiza os estados para o componente
     setCurrentHeight(currentViewportHeight)
-    setDocumentHeight(currentDocumentHeight)
+    setTotalHeight(currentTotalHeight)
+    setUserPosition(currentScroll)
 
     // Se é a primeira vez, inicializa
-    if (stateRef.current.lastScrollTop === 0) {
+    if (stateRef.current.lastTotalHeight === 0) {
       stateRef.current.lastScrollTop = currentScroll
+      stateRef.current.lastTotalHeight = currentTotalHeight
       stateRef.current.lastViewportHeight = currentViewportHeight
-      stateRef.current.lastDocumentHeight = currentDocumentHeight
       stateRef.current.lastAdjustmentTime = now
-      stateRef.current.lastScrollTime = now
-      stateRef.current.originalScrollTop = currentScroll
+
+      // Calcula a posição relativa inicial
+      const initialRelativePosition = calculateUserRelativePosition(
+        currentScroll,
+        currentTotalHeight,
+        currentViewportHeight
+      )
+      stateRef.current.userRelativePosition = initialRelativePosition
+
       return
     }
 
-    // Detecta mudanças na viewport ou documento
+    // Detecta mudanças na altura total da aplicação
+    const totalHeightChanged =
+      Math.abs(currentTotalHeight - stateRef.current.lastTotalHeight) > 5
     const viewportChanged =
-      Math.abs(currentViewportHeight - stateRef.current.lastViewportHeight) > 2
-    const documentChanged =
-      Math.abs(currentDocumentHeight - stateRef.current.lastDocumentHeight) > 2
+      Math.abs(currentViewportHeight - stateRef.current.lastViewportHeight) > 5
 
-    // Detecta scroll anormal
-    const abnormalScroll = detectAbnormalScroll(
-      currentScroll,
-      stateRef.current.lastScrollTop,
-      now
-    )
-
-    // Se houve mudança significativa OU scroll anormal
-    if (viewportChanged || documentChanged || abnormalScroll) {
+    // Se houve mudança significativa na altura total OU viewport
+    if (totalHeightChanged || viewportChanged) {
       // Verifica se passou tempo suficiente desde o último ajuste
       if (now - stateRef.current.lastAdjustmentTime > 100) {
         const previousScroll = stateRef.current.lastScrollTop
+        const previousTotalHeight = stateRef.current.lastTotalHeight
         const previousViewportHeight = stateRef.current.lastViewportHeight
-        const previousDocumentHeight = stateRef.current.lastDocumentHeight
-
-        // Calcula a posição relativa antes da mudança
-        const maxScrollBefore = Math.max(
-          0,
-          previousDocumentHeight - previousViewportHeight
-        )
-        const relativePosition =
-          maxScrollBefore > 0 ? previousScroll / maxScrollBefore : 0
+        const userRelativePosition = stateRef.current.userRelativePosition
 
         // Marca que estamos ajustando
         stateRef.current.isAdjusting = true
         setIsAdjusting(true)
         stateRef.current.lastAdjustmentTime = now
 
-        // Calcula a nova posição baseada na posição relativa
-        const maxScrollAfter = Math.max(
-          0,
-          currentDocumentHeight - currentViewportHeight
+        // Aplica a compensação para manter o usuário na mesma posição relativa
+        applyCompensation(
+          userRelativePosition,
+          currentTotalHeight,
+          currentViewportHeight
         )
-        const targetScroll = relativePosition * maxScrollAfter
-
-        // Aplica a compensação
-        window.scrollTo({
-          top: targetScroll,
-          behavior: 'auto'
-        })
 
         // Log para debug
         console.log('ViewportScrollFix - Compensando scroll:', {
           previousScroll,
-          targetScroll,
+          userRelativePosition: userRelativePosition.toFixed(1) + '%',
+          previousTotalHeight,
+          currentTotalHeight,
           previousViewportHeight,
           currentViewportHeight,
-          previousDocumentHeight,
-          currentDocumentHeight,
-          relativePosition: relativePosition.toFixed(3),
-          viewportChanged,
-          documentChanged,
-          abnormalScroll,
-          scrollDifference: Math.abs(currentScroll - previousScroll)
+          heightDifference: currentTotalHeight - previousTotalHeight,
+          totalHeightChanged,
+          viewportChanged
         })
 
         // Remove a flag de ajuste após um delay
         setTimeout(() => {
           stateRef.current.isAdjusting = false
           setIsAdjusting(false)
-        }, 150)
+        }, 200)
       }
     }
 
     // Atualiza o estado
     stateRef.current.lastScrollTop = currentScroll
+    stateRef.current.lastTotalHeight = currentTotalHeight
     stateRef.current.lastViewportHeight = currentViewportHeight
-    stateRef.current.lastDocumentHeight = currentDocumentHeight
-    stateRef.current.lastScrollTime = now
+
+    // Atualiza a posição relativa do usuário
+    const newRelativePosition = calculateUserRelativePosition(
+      currentScroll,
+      currentTotalHeight,
+      currentViewportHeight
+    )
+    stateRef.current.userRelativePosition = newRelativePosition
   }, [
     getScrollPosition,
+    getTotalHeight,
     getViewportHeight,
-    getDocumentHeight,
-    detectAbnormalScroll
+    calculateUserRelativePosition,
+    applyCompensation
   ])
 
   const handleViewportResize = useCallback(() => {
     // Força uma verificação quando a viewport muda
-    setTimeout(handleScroll, 30)
+    setTimeout(handleScroll, 50)
   }, [handleScroll])
 
   const handleWindowResize = useCallback(() => {
     // Força uma verificação quando a janela é redimensionada
-    setTimeout(handleScroll, 30)
+    setTimeout(handleScroll, 50)
   }, [handleScroll])
-
-  // Intercepta mudanças de scroll para detectar pulos automáticos
-  const interceptScroll = useCallback(() => {
-    const currentScroll = getScrollPosition()
-    const now = Date.now()
-
-    // Se não estamos ajustando, verifica se houve pulo automático
-    if (!stateRef.current.isAdjusting) {
-      const scrollDifference = Math.abs(
-        currentScroll - stateRef.current.lastScrollTop
-      )
-      const timeDifference = now - stateRef.current.lastScrollTime
-
-      // Se houve um pulo automático
-      if (scrollDifference > 100 && timeDifference < 100) {
-        console.log('ViewportScrollFix - Pulo automático detectado:', {
-          from: stateRef.current.lastScrollTop,
-          to: currentScroll,
-          difference: scrollDifference,
-          time: timeDifference
-        })
-
-        // Aplica correção imediata
-        stateRef.current.isAdjusting = true
-        setIsAdjusting(true)
-
-        // Volta para a posição anterior
-        window.scrollTo({
-          top: stateRef.current.lastScrollTop,
-          behavior: 'auto'
-        })
-
-        setTimeout(() => {
-          stateRef.current.isAdjusting = false
-          setIsAdjusting(false)
-        }, 100)
-      }
-    }
-
-    // Atualiza o estado
-    stateRef.current.lastScrollTop = currentScroll
-    stateRef.current.lastScrollTime = now
-  }, [getScrollPosition])
 
   useEffect(() => {
     // Inicializa
     const initialViewportHeight = getViewportHeight()
-    const initialDocumentHeight = getDocumentHeight()
+    const initialTotalHeight = getTotalHeight()
     const initialScroll = getScrollPosition()
 
     setCurrentHeight(initialViewportHeight)
-    setDocumentHeight(initialDocumentHeight)
+    setTotalHeight(initialTotalHeight)
+    setUserPosition(initialScroll)
 
     stateRef.current.lastScrollTop = initialScroll
+    stateRef.current.lastTotalHeight = initialTotalHeight
     stateRef.current.lastViewportHeight = initialViewportHeight
-    stateRef.current.lastDocumentHeight = initialDocumentHeight
     stateRef.current.lastAdjustmentTime = Date.now()
-    stateRef.current.lastScrollTime = Date.now()
-    stateRef.current.originalScrollTop = initialScroll
+
+    // Calcula a posição relativa inicial
+    const initialRelativePosition = calculateUserRelativePosition(
+      initialScroll,
+      initialTotalHeight,
+      initialViewportHeight
+    )
+    stateRef.current.userRelativePosition = initialRelativePosition
 
     // Adiciona listeners
     if (typeof window !== 'undefined' && 'visualViewport' in window) {
@@ -243,9 +208,6 @@ export const useViewportHeight = () => {
 
     window.addEventListener('resize', handleWindowResize)
     window.addEventListener('scroll', handleScroll, { passive: true })
-
-    // Adiciona listener específico para interceptar pulos
-    window.addEventListener('scroll', interceptScroll, { passive: true })
 
     return () => {
       if (typeof window !== 'undefined' && 'visualViewport' in window) {
@@ -256,13 +218,19 @@ export const useViewportHeight = () => {
       }
       window.removeEventListener('resize', handleWindowResize)
       window.removeEventListener('scroll', handleScroll)
-      window.removeEventListener('scroll', interceptScroll)
     }
-  }, [handleScroll, handleViewportResize, handleWindowResize, interceptScroll])
+  }, [
+    handleScroll,
+    handleViewportResize,
+    handleWindowResize,
+    calculateUserRelativePosition
+  ])
 
   return {
     currentHeight,
-    documentHeight,
-    isAdjusting
+    totalHeight,
+    isAdjusting,
+    userPosition,
+    userRelativePosition: stateRef.current.userRelativePosition
   }
 }

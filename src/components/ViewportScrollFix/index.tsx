@@ -6,7 +6,13 @@ interface ViewportScrollFixProps {
 }
 
 const ViewportScrollFix: React.FC<ViewportScrollFixProps> = ({ children }) => {
-  const { currentHeight, documentHeight, isAdjusting } = useViewportHeight()
+  const {
+    currentHeight,
+    totalHeight,
+    isAdjusting,
+    userPosition,
+    userRelativePosition
+  } = useViewportHeight()
   const [testMode, setTestMode] = useState(false)
 
   useEffect(() => {
@@ -14,15 +20,19 @@ const ViewportScrollFix: React.FC<ViewportScrollFixProps> = ({ children }) => {
     if (process.env.NODE_ENV === 'development') {
       console.log('ViewportScrollFix - Status:', {
         viewportHeight: currentHeight,
-        documentHeight: documentHeight,
-        isAdjusting: isAdjusting,
-        ratio:
-          documentHeight > 0
-            ? ((currentHeight / documentHeight) * 100).toFixed(1) + '%'
-            : 'N/A'
+        totalHeight: totalHeight,
+        userPosition: userPosition,
+        userRelativePosition: userRelativePosition.toFixed(1) + '%',
+        isAdjusting: isAdjusting
       })
     }
-  }, [currentHeight, documentHeight, isAdjusting])
+  }, [
+    currentHeight,
+    totalHeight,
+    userPosition,
+    userRelativePosition,
+    isAdjusting
+  ])
 
   const forceTest = () => {
     // Força uma mudança de altura para testar
@@ -37,7 +47,9 @@ const ViewportScrollFix: React.FC<ViewportScrollFixProps> = ({ children }) => {
     document.body.appendChild(testDiv)
 
     setTimeout(() => {
-      document.body.removeChild(testDiv)
+      if (document.body.contains(testDiv)) {
+        document.body.removeChild(testDiv)
+      }
     }, 1000)
   }
 
@@ -45,7 +57,9 @@ const ViewportScrollFix: React.FC<ViewportScrollFixProps> = ({ children }) => {
     <div
       className="viewport-scroll-fix"
       data-viewport-height={currentHeight}
-      data-document-height={documentHeight}
+      data-total-height={totalHeight}
+      data-user-position={userPosition}
+      data-user-relative-position={userRelativePosition}
       data-is-adjusting={isAdjusting}
       style={{
         // Adiciona uma borda sutil para debug visual (pode ser removida em produção)
@@ -65,15 +79,21 @@ const ViewportScrollFix: React.FC<ViewportScrollFixProps> = ({ children }) => {
               right: '10px',
               background: isAdjusting ? 'red' : 'green',
               color: 'white',
-              padding: '5px 10px',
-              borderRadius: '5px',
-              fontSize: '12px',
+              padding: '8px 12px',
+              borderRadius: '6px',
+              fontSize: '11px',
               zIndex: 9999,
-              fontFamily: 'monospace'
+              fontFamily: 'monospace',
+              minWidth: '200px'
             }}
           >
-            VH: {currentHeight}px | DH: {documentHeight}px |{' '}
-            {isAdjusting ? 'AJUSTANDO' : 'OK'}
+            <div style={{ marginBottom: '3px', fontWeight: 'bold' }}>
+              {isAdjusting ? '🔄 AJUSTANDO' : '✅ OK'}
+            </div>
+            <div>VH: {currentHeight}px</div>
+            <div>TH: {totalHeight}px</div>
+            <div>UP: {userPosition}px</div>
+            <div>URP: {userRelativePosition.toFixed(1)}%</div>
           </div>
 
           {/* Botão de teste */}
@@ -81,14 +101,14 @@ const ViewportScrollFix: React.FC<ViewportScrollFixProps> = ({ children }) => {
             onClick={forceTest}
             style={{
               position: 'fixed',
-              top: '50px',
+              top: '120px',
               right: '10px',
               background: 'blue',
               color: 'white',
               border: 'none',
-              padding: '5px 10px',
-              borderRadius: '5px',
-              fontSize: '12px',
+              padding: '6px 10px',
+              borderRadius: '4px',
+              fontSize: '11px',
               zIndex: 9999,
               cursor: 'pointer'
             }}
