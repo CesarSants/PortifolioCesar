@@ -40,7 +40,6 @@ const App = () => {
             <Contact />
           </Container>
         </ViewportScrollFix>
-        
         {/* Componente de teste - pode ser removido em produção */}
         {process.env.NODE_ENV === 'development' && <TestViewport />}
       </BrowserRouter>
