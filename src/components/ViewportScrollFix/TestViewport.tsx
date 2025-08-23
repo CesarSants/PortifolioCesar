@@ -6,7 +6,7 @@ const TestViewport: React.FC = () => {
   useEffect(() => {
     // Simula mudanças de altura para testar a solução
     const interval = setInterval(() => {
-      setTestHeight(prev => prev === 100 ? 150 : 100)
+      setTestHeight((prev) => (prev === 100 ? 150 : 100))
     }, 2000)
 
     return () => clearInterval(interval)
@@ -22,13 +22,13 @@ const TestViewport: React.FC = () => {
     testDiv.style.left = '0'
     testDiv.style.zIndex = '-1'
     testDiv.style.transition = 'height 0.5s'
-    
+
     document.body.appendChild(testDiv)
-    
+
     setTimeout(() => {
       testDiv.style.height = '100px'
     }, 100)
-    
+
     setTimeout(() => {
       document.body.removeChild(testDiv)
     }, 1000)
@@ -54,9 +54,7 @@ const TestViewport: React.FC = () => {
       <div style={{ marginBottom: '10px', fontWeight: 'bold' }}>
         🧪 Teste de Viewport
       </div>
-      <div style={{ marginBottom: '5px' }}>
-        Altura: {testHeight}px
-      </div>
+      <div style={{ marginBottom: '5px' }}>Altura: {testHeight}px</div>
       <div style={{ marginBottom: '10px', fontSize: '10px', opacity: 0.8 }}>
         Mudança automática a cada 2s
       </div>
@@ -75,13 +73,15 @@ const TestViewport: React.FC = () => {
       >
         Forçar Mudança
       </button>
-      <div style={{ 
-        height: `${testHeight}px`, 
-        background: '#333', 
-        marginTop: '10px',
-        transition: 'height 0.5s',
-        borderRadius: '4px'
-      }}></div>
+      <div
+        style={{
+          height: `${testHeight}px`,
+          background: '#333',
+          marginTop: '10px',
+          transition: 'height 0.5s',
+          borderRadius: '4px'
+        }}
+      ></div>
     </div>
   )
 }
