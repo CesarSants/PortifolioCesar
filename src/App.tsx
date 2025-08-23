@@ -16,6 +16,7 @@ import Contact from './components/Contact'
 import { BrowserRouter, BrowserRouter as Router } from 'react-router-dom'
 import ScrollOnLoad from './utils/ScrollOnLoad'
 import ViewportScrollFix from './components/ViewportScrollFix'
+import TestViewport from './components/ViewportScrollFix/TestViewport'
 
 const App = () => {
   useEffect(() => {
@@ -39,6 +40,9 @@ const App = () => {
             <Contact />
           </Container>
         </ViewportScrollFix>
+        
+        {/* Componente de teste - pode ser removido em produção */}
+        {process.env.NODE_ENV === 'development' && <TestViewport />}
       </BrowserRouter>
     </Provider>
   )
