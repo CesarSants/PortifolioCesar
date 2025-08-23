@@ -27,7 +27,7 @@ export const useViewportHeight = () => {
   })
 
   const intervalRef = useRef<NodeJS.Timeout | null>(null)
-  const scrollLockRef = useRef(false)
+  const lastCompensationTime = useRef(0)
 
   const getViewportHeight = useCallback(() => {
     if (typeof window !== 'undefined' && 'visualViewport' in window) {
@@ -53,21 +53,7 @@ export const useViewportHeight = () => {
     []
   )
 
-  const lockScroll = useCallback(() => {
-    scrollLockRef.current = true
-    document.body.style.overflow = 'hidden'
-    document.body.style.position = 'fixed'
-    document.body.style.width = '100%'
-  }, [])
-
-  const unlockScroll = useCallback(() => {
-    scrollLockRef.current = false
-    document.body.style.overflow = ''
-    document.body.style.position = ''
-    document.body.style.width = ''
-  }, [])
-
-  const applyCompensation = useCallback(
+  const smoothCompensation = useCallback(
     (
       relativePosition: number,
       newTotalHeight: number,
@@ -76,24 +62,16 @@ export const useViewportHeight = () => {
       const maxScroll = Math.max(0, newTotalHeight - newViewportHeight)
       const targetScroll = (relativePosition / 100) * maxScroll
 
-      // Bloqueia scroll temporariamente
-      lockScroll()
-
-      // Aplica compensação
+      // Aplica compensação suave sem bloquear scroll
       window.scrollTo({
         top: targetScroll,
-        behavior: 'auto'
+        behavior: 'smooth'
       })
-
-      // Desbloqueia scroll após compensação
-      setTimeout(() => {
-        unlockScroll()
-      }, 50)
     },
-    [lockScroll, unlockScroll]
+    []
   )
 
-  const aggressiveCompensation = useCallback(() => {
+  const intelligentCompensation = useCallback(() => {
     const currentScroll = getScrollPosition()
     const currentTotalHeight = getTotalHeight()
     const currentViewportHeight = getViewportHeight()
@@ -126,45 +104,52 @@ export const useViewportHeight = () => {
     const totalHeightChanged =
       Math.abs(currentTotalHeight - stateRef.current.lastTotalHeight) > 2
 
-    // Se a altura total mudou, aplica compensação AGRESSIVA
+    // Se a altura total mudou e não estamos ajustando, aplica compensação inteligente
     if (totalHeightChanged && !stateRef.current.isAdjusting) {
       const previousRelativePosition = stateRef.current.userRelativePosition
       const previousScroll = stateRef.current.lastScrollTop
+      const timeSinceLastCompensation = now - lastCompensationTime.current
 
-      // Marca que estamos ajustando
-      stateRef.current.isAdjusting = true
-      setIsAdjusting(true)
-      stateRef.current.lastAdjustmentTime = now
+      // Evita compensações muito frequentes (mínimo 200ms entre elas)
+      if (timeSinceLastCompensation > 200) {
+        // Marca que estamos ajustando
+        stateRef.current.isAdjusting = true
+        setIsAdjusting(true)
+        stateRef.current.lastAdjustmentTime = now
+        lastCompensationTime.current = now
 
-      // Calcula a nova posição baseada na posição relativa
-      const maxScroll = Math.max(0, currentTotalHeight - currentViewportHeight)
-      const targetScroll = (previousRelativePosition / 100) * maxScroll
+        // Calcula a nova posição baseada na posição relativa
+        const maxScroll = Math.max(
+          0,
+          currentTotalHeight - currentViewportHeight
+        )
+        const targetScroll = (previousRelativePosition / 100) * maxScroll
 
-      // Bloqueia scroll e aplica compensação
-      lockScroll()
+        // Aplica compensação suave
+        smoothCompensation(
+          previousRelativePosition,
+          currentTotalHeight,
+          currentViewportHeight
+        )
 
-      // Força o scroll para a posição correta
-      window.scrollTo({
-        top: targetScroll,
-        behavior: 'auto'
-      })
+        console.log('ViewportScrollFix - COMPENSAÇÃO INTELIGENTE APLICADA:', {
+          previousRelativePosition: previousRelativePosition.toFixed(1) + '%',
+          previousScroll: previousScroll,
+          targetScroll: targetScroll,
+          previousTotalHeight: stateRef.current.lastTotalHeight,
+          currentTotalHeight: currentTotalHeight,
+          heightDifference:
+            currentTotalHeight - stateRef.current.lastTotalHeight,
+          timeSinceLastCompensation: timeSinceLastCompensation + 'ms',
+          timestamp: new Date().toLocaleTimeString()
+        })
 
-      // Desbloqueia scroll após compensação
-      setTimeout(() => {
-        unlockScroll()
-        stateRef.current.isAdjusting = false
-        setIsAdjusting(false)
-      }, 100)
-
-      console.log('ViewportScrollFix - COMPENSAÇÃO AGRESSIVA APLICADA:', {
-        previousRelativePosition: previousRelativePosition.toFixed(1) + '%',
-        previousScroll: previousScroll,
-        targetScroll: targetScroll,
-        previousTotalHeight: stateRef.current.lastTotalHeight,
-        currentTotalHeight: currentTotalHeight,
-        heightDifference: currentTotalHeight - stateRef.current.lastTotalHeight,
-        timestamp: new Date().toLocaleTimeString()
-      })
+        // Remove flag após compensação
+        setTimeout(() => {
+          stateRef.current.isAdjusting = false
+          setIsAdjusting(false)
+        }, 300)
+      }
     }
 
     // Atualiza o estado
@@ -185,8 +170,7 @@ export const useViewportHeight = () => {
     getTotalHeight,
     getViewportHeight,
     calculateUserRelativePosition,
-    lockScroll,
-    unlockScroll
+    smoothCompensation
   ])
 
   const startContinuousMonitoring = useCallback(() => {
@@ -195,9 +179,9 @@ export const useViewportHeight = () => {
       clearInterval(intervalRef.current)
     }
 
-    // Inicia monitoramento contínuo a cada 8ms (120fps) para máxima responsividade
-    intervalRef.current = setInterval(aggressiveCompensation, 8)
-  }, [aggressiveCompensation])
+    // Inicia monitoramento contínuo a cada 16ms (60fps) para boa responsividade
+    intervalRef.current = setInterval(intelligentCompensation, 16)
+  }, [intelligentCompensation])
 
   const stopContinuousMonitoring = useCallback(() => {
     if (intervalRef.current) {
@@ -253,15 +237,11 @@ export const useViewportHeight = () => {
 
       // Para o monitoramento
       stopContinuousMonitoring()
-
-      // Garante que o scroll seja desbloqueado
-      unlockScroll()
     }
   }, [
     startContinuousMonitoring,
     stopContinuousMonitoring,
-    calculateUserRelativePosition,
-    unlockScroll
+    calculateUserRelativePosition
   ])
 
   return {
