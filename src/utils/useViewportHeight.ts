@@ -1,13 +1,11 @@
 import { useEffect, useRef, useCallback, useState } from 'react'
 
-interface ScrollState {
-  lastTotalHeight: number
-  lastViewportHeight: number
-  isAdjusting: boolean
-  lastAdjustmentTime: number
+interface ViewportState {
+  currentHeight: number
+  totalHeight: number
+  userPosition: number
   userRelativePosition: number
-  lastScrollTop: number
-  targetScrollPosition: number
+  isAdjusting: boolean
 }
 
 export const useViewportHeight = () => {
@@ -16,18 +14,16 @@ export const useViewportHeight = () => {
   const [isAdjusting, setIsAdjusting] = useState(false)
   const [userPosition, setUserPosition] = useState(0)
 
-  const stateRef = useRef<ScrollState>({
-    lastTotalHeight: 0,
-    lastViewportHeight: 0,
-    isAdjusting: false,
-    lastAdjustmentTime: 0,
+  const stateRef = useRef<ViewportState>({
+    currentHeight: 0,
+    totalHeight: 0,
+    userPosition: 0,
     userRelativePosition: 0,
-    lastScrollTop: 0,
-    targetScrollPosition: 0
+    isAdjusting: false
   })
 
   const intervalRef = useRef<NodeJS.Timeout | null>(null)
-  const lastCompensationTime = useRef(0)
+  const lastHeightChange = useRef(0)
 
   const getViewportHeight = useCallback(() => {
     if (typeof window !== 'undefined' && 'visualViewport' in window) {
@@ -53,25 +49,47 @@ export const useViewportHeight = () => {
     []
   )
 
-  const smoothCompensation = useCallback(
-    (
-      relativePosition: number,
-      newTotalHeight: number,
-      newViewportHeight: number
-    ) => {
-      const maxScroll = Math.max(0, newTotalHeight - newViewportHeight)
-      const targetScroll = (relativePosition / 100) * maxScroll
+  const applyHeightCompensation = useCallback(
+    (heightDifference: number, userRelativePosition: number) => {
+      // Se a altura diminuiu, adiciona padding-top ao body para compensar
+      if (heightDifference < 0) {
+        const currentPaddingTop =
+          parseInt(getComputedStyle(document.body).paddingTop) || 0
+        const newPaddingTop = currentPaddingTop + Math.abs(heightDifference)
 
-      // Aplica compensação suave sem bloquear scroll
-      window.scrollTo({
-        top: targetScroll,
-        behavior: 'smooth'
-      })
+        document.body.style.paddingTop = `${newPaddingTop}px`
+
+        console.log('ViewportScrollFix - COMPENSAÇÃO DE ALTURA APLICADA:', {
+          heightDifference: heightDifference + 'px',
+          newPaddingTop: newPaddingTop + 'px',
+          userRelativePosition: userRelativePosition.toFixed(1) + '%',
+          timestamp: new Date().toLocaleTimeString()
+        })
+      }
+      // Se a altura aumentou, remove padding-top se existir
+      else if (heightDifference > 0) {
+        const currentPaddingTop =
+          parseInt(getComputedStyle(document.body).paddingTop) || 0
+        if (currentPaddingTop > 0) {
+          const newPaddingTop = Math.max(
+            0,
+            currentPaddingTop - heightDifference
+          )
+          document.body.style.paddingTop = `${newPaddingTop}px`
+
+          console.log('ViewportScrollFix - REDUÇÃO DE ALTURA APLICADA:', {
+            heightDifference: heightDifference + 'px',
+            newPaddingTop: newPaddingTop + 'px',
+            userRelativePosition: userRelativePosition.toFixed(1) + '%',
+            timestamp: new Date().toLocaleTimeString()
+          })
+        }
+      }
     },
     []
   )
 
-  const intelligentCompensation = useCallback(() => {
+  const monitorHeightChanges = useCallback(() => {
     const currentScroll = getScrollPosition()
     const currentTotalHeight = getTotalHeight()
     const currentViewportHeight = getViewportHeight()
@@ -83,11 +101,10 @@ export const useViewportHeight = () => {
     setUserPosition(currentScroll)
 
     // Se é a primeira vez, inicializa
-    if (stateRef.current.lastTotalHeight === 0) {
-      stateRef.current.lastTotalHeight = currentTotalHeight
-      stateRef.current.lastViewportHeight = currentViewportHeight
-      stateRef.current.lastScrollTop = currentScroll
-      stateRef.current.lastAdjustmentTime = now
+    if (stateRef.current.totalHeight === 0) {
+      stateRef.current.currentHeight = currentViewportHeight
+      stateRef.current.totalHeight = currentTotalHeight
+      stateRef.current.userPosition = currentScroll
 
       const initialRelativePosition = calculateUserRelativePosition(
         currentScroll,
@@ -95,67 +112,44 @@ export const useViewportHeight = () => {
         currentViewportHeight
       )
       stateRef.current.userRelativePosition = initialRelativePosition
-      stateRef.current.targetScrollPosition = currentScroll
+      lastHeightChange.current = now
 
       return
     }
 
     // Detecta mudanças na altura total da página
     const totalHeightChanged =
-      Math.abs(currentTotalHeight - stateRef.current.lastTotalHeight) > 2
+      Math.abs(currentTotalHeight - stateRef.current.totalHeight) > 2
+    const timeSinceLastChange = now - lastHeightChange.current
 
-    // Se a altura total mudou e não estamos ajustando, aplica compensação inteligente
-    if (totalHeightChanged && !stateRef.current.isAdjusting) {
-      const previousRelativePosition = stateRef.current.userRelativePosition
-      const previousScroll = stateRef.current.lastScrollTop
-      const timeSinceLastCompensation = now - lastCompensationTime.current
+    // Se a altura total mudou e não estamos ajustando, aplica compensação de altura
+    if (
+      totalHeightChanged &&
+      !stateRef.current.isAdjusting &&
+      timeSinceLastChange > 100
+    ) {
+      const heightDifference = currentTotalHeight - stateRef.current.totalHeight
+      const currentRelativePosition = stateRef.current.userRelativePosition
 
-      // Evita compensações muito frequentes (mínimo 200ms entre elas)
-      if (timeSinceLastCompensation > 200) {
-        // Marca que estamos ajustando
-        stateRef.current.isAdjusting = true
-        setIsAdjusting(true)
-        stateRef.current.lastAdjustmentTime = now
-        lastCompensationTime.current = now
+      // Marca que estamos ajustando
+      stateRef.current.isAdjusting = true
+      setIsAdjusting(true)
+      lastHeightChange.current = now
 
-        // Calcula a nova posição baseada na posição relativa
-        const maxScroll = Math.max(
-          0,
-          currentTotalHeight - currentViewportHeight
-        )
-        const targetScroll = (previousRelativePosition / 100) * maxScroll
+      // Aplica compensação de altura (crescimento para cima)
+      applyHeightCompensation(heightDifference, currentRelativePosition)
 
-        // Aplica compensação suave
-        smoothCompensation(
-          previousRelativePosition,
-          currentTotalHeight,
-          currentViewportHeight
-        )
-
-        console.log('ViewportScrollFix - COMPENSAÇÃO INTELIGENTE APLICADA:', {
-          previousRelativePosition: previousRelativePosition.toFixed(1) + '%',
-          previousScroll: previousScroll,
-          targetScroll: targetScroll,
-          previousTotalHeight: stateRef.current.lastTotalHeight,
-          currentTotalHeight: currentTotalHeight,
-          heightDifference:
-            currentTotalHeight - stateRef.current.lastTotalHeight,
-          timeSinceLastCompensation: timeSinceLastCompensation + 'ms',
-          timestamp: new Date().toLocaleTimeString()
-        })
-
-        // Remove flag após compensação
-        setTimeout(() => {
-          stateRef.current.isAdjusting = false
-          setIsAdjusting(false)
-        }, 300)
-      }
+      // Remove flag após compensação
+      setTimeout(() => {
+        stateRef.current.isAdjusting = false
+        setIsAdjusting(false)
+      }, 200)
     }
 
     // Atualiza o estado
-    stateRef.current.lastTotalHeight = currentTotalHeight
-    stateRef.current.lastViewportHeight = currentViewportHeight
-    stateRef.current.lastScrollTop = currentScroll
+    stateRef.current.currentHeight = currentViewportHeight
+    stateRef.current.totalHeight = currentTotalHeight
+    stateRef.current.userPosition = currentScroll
 
     // Atualiza a posição relativa
     const newRelativePosition = calculateUserRelativePosition(
@@ -164,13 +158,12 @@ export const useViewportHeight = () => {
       currentViewportHeight
     )
     stateRef.current.userRelativePosition = newRelativePosition
-    stateRef.current.targetScrollPosition = currentScroll
   }, [
     getScrollPosition,
     getTotalHeight,
     getViewportHeight,
     calculateUserRelativePosition,
-    smoothCompensation
+    applyHeightCompensation
   ])
 
   const startContinuousMonitoring = useCallback(() => {
@@ -179,15 +172,21 @@ export const useViewportHeight = () => {
       clearInterval(intervalRef.current)
     }
 
-    // Inicia monitoramento contínuo a cada 16ms (60fps) para boa responsividade
-    intervalRef.current = setInterval(intelligentCompensation, 16)
-  }, [intelligentCompensation])
+    // Inicia monitoramento contínuo a cada 16ms (60fps)
+    intervalRef.current = setInterval(monitorHeightChanges, 16)
+  }, [monitorHeightChanges])
 
   const stopContinuousMonitoring = useCallback(() => {
     if (intervalRef.current) {
       clearInterval(intervalRef.current)
       intervalRef.current = null
     }
+  }, [])
+
+  const resetHeightCompensation = useCallback(() => {
+    // Remove qualquer compensação de altura aplicada
+    document.body.style.paddingTop = ''
+    console.log('ViewportScrollFix - Compensação de altura resetada')
   }, [])
 
   useEffect(() => {
@@ -200,10 +199,9 @@ export const useViewportHeight = () => {
     setTotalHeight(initialTotalHeight)
     setUserPosition(initialScroll)
 
-    stateRef.current.lastTotalHeight = initialTotalHeight
-    stateRef.current.lastViewportHeight = initialViewportHeight
-    stateRef.current.lastScrollTop = initialScroll
-    stateRef.current.lastAdjustmentTime = Date.now()
+    stateRef.current.currentHeight = initialViewportHeight
+    stateRef.current.totalHeight = initialTotalHeight
+    stateRef.current.userPosition = initialScroll
 
     const initialRelativePosition = calculateUserRelativePosition(
       initialScroll,
@@ -211,7 +209,6 @@ export const useViewportHeight = () => {
       initialViewportHeight
     )
     stateRef.current.userRelativePosition = initialRelativePosition
-    stateRef.current.targetScrollPosition = initialScroll
 
     // Inicia monitoramento contínuo
     startContinuousMonitoring()
@@ -237,11 +234,15 @@ export const useViewportHeight = () => {
 
       // Para o monitoramento
       stopContinuousMonitoring()
+
+      // Remove compensação de altura ao desmontar
+      resetHeightCompensation()
     }
   }, [
     startContinuousMonitoring,
     stopContinuousMonitoring,
-    calculateUserRelativePosition
+    calculateUserRelativePosition,
+    resetHeightCompensation
   ])
 
   return {
@@ -249,6 +250,7 @@ export const useViewportHeight = () => {
     totalHeight,
     isAdjusting,
     userPosition,
-    userRelativePosition: stateRef.current.userRelativePosition
+    userRelativePosition: stateRef.current.userRelativePosition,
+    resetHeightCompensation
   }
 }
