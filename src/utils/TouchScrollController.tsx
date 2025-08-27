@@ -29,6 +29,23 @@ const TouchScrollController: React.FC<TouchScrollControllerProps> = ({
   const scrollEndTimeout = useRef<NodeJS.Timeout | null>(null)
   const lastScrollPosition = useRef<number>(0)
 
+  // Detecta dinamicamente um ancestral rolável (overflow e conteúdo excedente)
+  const findScrollableAncestor = useCallback((start: Element | null) => {
+    let node: Element | null = start
+    while (node && node !== document.body) {
+      const el = node as HTMLElement
+      const style = window.getComputedStyle(el)
+      const overflowY = style.overflowY
+      const canScroll = el.scrollHeight > el.clientHeight
+      const isScrollableY = overflowY === 'auto' || overflowY === 'scroll'
+      if (canScroll && isScrollableY) {
+        return el
+      }
+      node = node.parentElement
+    }
+    return null
+  }, [])
+
   // Função para detectar a seção atual (baseada no sistema de navegação existente)
   const detectCurrentSection = useCallback(() => {
     const sections = SECTION_IDS.map((id, index) => {
@@ -153,12 +170,13 @@ const TouchScrollController: React.FC<TouchScrollControllerProps> = ({
       // simplesmente não fazemos nada - deixamos o scroll interno funcionar
       const element = e.target as Element
 
-      // Verifica se está dentro de um elemento com scroll
+      // Verifica se está dentro de um elemento com scroll (dinâmico + classes conhecidas)
       const hasScrollableParent =
         element.closest('.textContainer') ||
         element.closest('.cardContainer') ||
         element.closest('.cardContainer2') ||
-        element.closest('.sliderImgContainer')
+        element.closest('.sliderImgContainer') ||
+        findScrollableAncestor(element)
 
       // Se tem scroll interno, não fazemos nada - scroll interno funciona naturalmente
       if (hasScrollableParent) {
@@ -178,12 +196,13 @@ const TouchScrollController: React.FC<TouchScrollControllerProps> = ({
       // simplesmente não fazemos nada - deixamos o scroll interno funcionar
       const element = e.target as Element
 
-      // Verifica se está dentro de um elemento com scroll
+      // Verifica se está dentro de um elemento com scroll (dinâmico + classes conhecidas)
       const hasScrollableParent =
         element.closest('.textContainer') ||
         element.closest('.cardContainer') ||
         element.closest('.cardContainer2') ||
-        element.closest('.sliderImgContainer')
+        element.closest('.sliderImgContainer') ||
+        findScrollableAncestor(element)
 
       // Se tem scroll interno, não fazemos nada - scroll interno funciona naturalmente
       if (hasScrollableParent) {
@@ -222,12 +241,13 @@ const TouchScrollController: React.FC<TouchScrollControllerProps> = ({
         return
       }
 
-      // Verifica se está dentro de um elemento com scroll
+      // Verifica se está dentro de um elemento com scroll (dinâmico + classes conhecidas)
       const scrollableElement =
         element.closest('.textContainer') ||
         element.closest('.cardContainer') ||
         element.closest('.cardContainer2') ||
-        element.closest('.sliderImgContainer')
+        element.closest('.sliderImgContainer') ||
+        findScrollableAncestor(element)
 
       // Se tem scroll interno, NÃO previne - deixa o scroll interno funcionar
       // O blockPageScroll vai cuidar de reverter qualquer scroll indesejado da página
@@ -274,12 +294,13 @@ const TouchScrollController: React.FC<TouchScrollControllerProps> = ({
         return
       }
 
-      // Verifica se está dentro de um elemento com scroll
+      // Verifica se está dentro de um elemento com scroll (dinâmico + classes conhecidas)
       const scrollableElement =
         element.closest('.textContainer') ||
         element.closest('.cardContainer') ||
         element.closest('.cardContainer2') ||
-        element.closest('.sliderImgContainer')
+        element.closest('.sliderImgContainer') ||
+        findScrollableAncestor(element)
 
       // Se tem scroll interno, NÃO previne - deixa o scroll interno funcionar
       // O blockPageScroll vai cuidar de reverter qualquer scroll indesejado da página
