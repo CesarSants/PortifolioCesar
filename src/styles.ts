@@ -48,6 +48,7 @@ export const GlobalCss = createGlobalStyle`
     /* Impede scroll chaining da página quando estiver rolando dentro de containers com scroll */
     .textContainer,
     .cardContainer,
+    .cardContainer2,
     .sliderImgContainer {
       overscroll-behavior: contain;        /* bloqueia propagação do scroll para o viewport */
       overscroll-behavior-y: contain;
@@ -122,6 +123,7 @@ export const GlobalCss = createGlobalStyle`
     /* Reforça nos dispositivos touch que os containers internos tratam seu próprio scroll */
     .textContainer,
     .cardContainer,
+    .cardContainer2,
     .sliderImgContainer {
       overscroll-behavior: contain;
       overscroll-behavior-y: contain;

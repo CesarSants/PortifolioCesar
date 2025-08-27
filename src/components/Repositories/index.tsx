@@ -1007,7 +1007,7 @@ const Repositories = () => {
                 </div>
               </div>
             </div>
-            <div className="cardContainer">
+            <div className="cardContainer2">
               {estaCarregando ? (
                 <h2>Carregando...</h2>
               ) : (

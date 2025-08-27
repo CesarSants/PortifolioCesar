@@ -169,7 +169,7 @@ export const ContentWrapper = styled.div`
         }
       }
 
-      .cardContainer {
+      .cardContainer2 {
         flex: 1;
         box-sizing: border-box;
         margin: 20px 40px;
@@ -179,17 +179,17 @@ export const ContentWrapper = styled.div`
         scrollbar-color: rgba(100, 100, 100, 0.6) transparent;
       }
 
-      .cardContainer::-webkit-scrollbar {
+      .cardContainer2::-webkit-scrollbar {
         width: 8px;
         height: 8px;
       }
 
-      .cardContainer::-webkit-scrollbar-thumb {
+      .cardContainer2::-webkit-scrollbar-thumb {
         background-color: rgba(100, 100, 100, 0.6);
         border-radius: 10px;
       }
 
-      .cardContainer::-webkit-scrollbar-track {
+      .cardContainer2::-webkit-scrollbar-track {
         background: transparent;
       }
 

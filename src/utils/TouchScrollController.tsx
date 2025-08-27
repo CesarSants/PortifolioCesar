@@ -157,6 +157,7 @@ const TouchScrollController: React.FC<TouchScrollControllerProps> = ({
       const hasScrollableParent =
         element.closest('.textContainer') ||
         element.closest('.cardContainer') ||
+        element.closest('.cardContainer2') ||
         element.closest('.sliderImgContainer')
 
       // Se tem scroll interno, não fazemos nada - scroll interno funciona naturalmente
@@ -181,6 +182,7 @@ const TouchScrollController: React.FC<TouchScrollControllerProps> = ({
       const hasScrollableParent =
         element.closest('.textContainer') ||
         element.closest('.cardContainer') ||
+        element.closest('.cardContainer2') ||
         element.closest('.sliderImgContainer')
 
       // Se tem scroll interno, não fazemos nada - scroll interno funciona naturalmente
@@ -224,6 +226,7 @@ const TouchScrollController: React.FC<TouchScrollControllerProps> = ({
       const scrollableElement =
         element.closest('.textContainer') ||
         element.closest('.cardContainer') ||
+        element.closest('.cardContainer2') ||
         element.closest('.sliderImgContainer')
 
       // Se tem scroll interno, NÃO previne - deixa o scroll interno funcionar
@@ -275,6 +278,7 @@ const TouchScrollController: React.FC<TouchScrollControllerProps> = ({
       const scrollableElement =
         element.closest('.textContainer') ||
         element.closest('.cardContainer') ||
+        element.closest('.cardContainer2') ||
         element.closest('.sliderImgContainer')
 
       // Se tem scroll interno, NÃO previne - deixa o scroll interno funcionar
