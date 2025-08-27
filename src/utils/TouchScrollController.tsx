@@ -209,28 +209,27 @@ const TouchScrollController: React.FC<TouchScrollControllerProps> = ({
 
       const element = e.target as Element
 
+      // Caso especial: dentro do card/slider, desabilita o scroll da página por completo
+      const isInCardArea =
+        element.closest('.cardContainer') ||
+        element.closest('.slider') ||
+        element.closest('.slick-list')
+
+      if (isInCardArea) {
+        e.preventDefault()
+        return
+      }
+
       // Verifica se está dentro de um elemento com scroll
       const scrollableElement =
         element.closest('.textContainer') ||
         element.closest('.cardContainer') ||
         element.closest('.sliderImgContainer')
 
-      // Se tem scroll interno, verifica se precisa bloquear
+      // Se tem scroll interno, NÃO previne - deixa o scroll interno funcionar
+      // O blockPageScroll vai cuidar de reverter qualquer scroll indesejado da página
       if (scrollableElement) {
-        const scrollTop = scrollableElement.scrollTop
-        const scrollHeight = scrollableElement.scrollHeight
-        const clientHeight = scrollableElement.clientHeight
-
-        // Verifica se o elemento está nos limites
-        const isAtTop = scrollTop <= 0
-        const isAtBottom = scrollTop + clientHeight >= scrollHeight
-
-        // Se está no topo e tentando rolar para cima, ou no final e tentando rolar para baixo
-        // previne o scroll da página para evitar desalinhamento
-        if ((isAtTop && e.deltaY < 0) || (isAtBottom && e.deltaY > 0)) {
-          e.preventDefault()
-        }
-        return
+        return // Não interfere com scroll interno
       }
 
       // Previne scroll livre em dispositivos touch apenas fora de elementos com scroll
@@ -261,32 +260,27 @@ const TouchScrollController: React.FC<TouchScrollControllerProps> = ({
 
       const element = e.target as Element
 
+      // Caso especial: dentro do card/slider, desabilita o scroll da página por completo
+      const isInCardArea =
+        element.closest('.cardContainer') ||
+        element.closest('.slider') ||
+        element.closest('.slick-list')
+
+      if (isInCardArea) {
+        e.preventDefault()
+        return
+      }
+
       // Verifica se está dentro de um elemento com scroll
       const scrollableElement =
         element.closest('.textContainer') ||
         element.closest('.cardContainer') ||
         element.closest('.sliderImgContainer')
 
-      // Se tem scroll interno, verifica se precisa bloquear
+      // Se tem scroll interno, NÃO previne - deixa o scroll interno funcionar
+      // O blockPageScroll vai cuidar de reverter qualquer scroll indesejado da página
       if (scrollableElement) {
-        const touch = (e as TouchEvent).touches[0]
-        const scrollTop = scrollableElement.scrollTop
-        const scrollHeight = scrollableElement.scrollHeight
-        const clientHeight = scrollableElement.clientHeight
-
-        // Verifica se o elemento está nos limites
-        const isAtTop = scrollTop <= 0
-        const isAtBottom = scrollTop + clientHeight >= scrollHeight
-
-        // Se está no topo e tentando rolar para cima, ou no final e tentando rolar para baixo
-        // previne o scroll da página para evitar desalinhamento
-        if (
-          (isAtTop && touch.clientY > 0) ||
-          (isAtBottom && touch.clientY < 0)
-        ) {
-          e.preventDefault()
-        }
-        return
+        return // Não interfere com scroll interno
       }
 
       // Se não tem scroll interno, previne para manter o scroll controlado
@@ -334,37 +328,7 @@ const TouchScrollController: React.FC<TouchScrollControllerProps> = ({
     lastScrollPosition.current = currentPosition
   }, [syncCurrentSection])
 
-  // Função para bloquear scroll da página quando usuário está em elementos com scroll
-  const blockPageScroll = useCallback(() => {
-    if (!isTouchDevice) return
-
-    const activeElement =
-      document.activeElement || document.querySelector(':hover')
-    if (!activeElement) return
-
-    const scrollableElement =
-      activeElement.closest('.textContainer') ||
-      activeElement.closest('.cardContainer') ||
-      activeElement.closest('.sliderImgContainer')
-
-    if (scrollableElement) {
-      const scrollTop = scrollableElement.scrollTop
-      const scrollHeight = scrollableElement.scrollHeight
-      const clientHeight = scrollableElement.clientHeight
-
-      // Verifica se o elemento está nos limites (início ou fim)
-      const isAtTop = scrollTop <= 0
-      const isAtBottom = scrollTop + clientHeight >= scrollHeight
-
-      // Se está nos limites, bloqueia qualquer mudança no scroll da página
-      if (isAtTop || isAtBottom) {
-        const currentPosition = window.pageYOffset
-        if (Math.abs(currentPosition - lastScrollPosition.current) > 5) {
-          window.scrollTo(0, lastScrollPosition.current)
-        }
-      }
-    }
-  }, [isTouchDevice])
+  // (removido) bloqueio manual do scroll da página — CSS overscroll-behavior cobre o caso
 
   useEffect(() => {
     if (!isTouchDevice) return
@@ -396,9 +360,6 @@ const TouchScrollController: React.FC<TouchScrollControllerProps> = ({
 
       // Verifica se o scroll parou
       checkScrollStopped()
-
-      // Bloqueia scroll da página quando usuário está em elementos com scroll
-      blockPageScroll()
     }
 
     window.addEventListener('scroll', handleScroll, { passive: true })

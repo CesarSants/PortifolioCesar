@@ -45,6 +45,16 @@ export const GlobalCss = createGlobalStyle`
     color: ${cores.branca};
     overflow-x: hidden;
 
+    /* Impede scroll chaining da página quando estiver rolando dentro de containers com scroll */
+    .textContainer,
+    .cardContainer,
+    .sliderImgContainer {
+      overscroll-behavior: contain;        /* bloqueia propagação do scroll para o viewport */
+      overscroll-behavior-y: contain;
+      -webkit-overflow-scrolling: touch;   /* inércia suave no iOS */
+      touch-action: pan-y;                 /* permite pan vertical nativo; evita gestos laterais interferirem */
+    }
+
     .Toastify__toast-container {
       position: fixed !important;
       z-index: 9999999 !important;
@@ -109,10 +119,36 @@ export const GlobalCss = createGlobalStyle`
       font-size: 16px !important;
     }
 
+    /* Reforça nos dispositivos touch que os containers internos tratam seu próprio scroll */
+    .textContainer,
+    .cardContainer,
+    .sliderImgContainer {
+      overscroll-behavior: contain;
+      overscroll-behavior-y: contain;
+      -webkit-overflow-scrolling: touch;
+      touch-action: pan-y;
+    }
+
     /* Melhora a responsividade de botões em touch */
     button, a, [role="button"] {
       min-height: 44px;
       min-width: 44px;
+    }
+
+    /* Exceção: botões de paginação do slider (slick dots) não devem inflar tamanho
+       para não desalinharem números/indicadores */
+    .slick-dots li button,
+    .slider .slick-dots li button,
+    .slider2 .slick-dots li button {
+      min-width: 0 !important;
+      min-height: 0 !important;
+      width: auto;
+      height: auto;
+      padding: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
     }
   }
 
