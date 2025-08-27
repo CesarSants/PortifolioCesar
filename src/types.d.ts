@@ -219,3 +219,15 @@ interface CSS {
 declare global {
   const CSS: CSS
 }
+
+// Tipos para o sistema de scroll controlado
+declare global {
+  interface Window {
+    ontouchstart: any
+    onmsgesturechange: any
+  }
+  
+  interface Navigator {
+    msMaxTouchPoints?: number
+  }
+}

@@ -90,6 +90,43 @@ export const GlobalCss = createGlobalStyle`
       opacity: 1;
     }
   }
+
+  /* Estilos específicos para dispositivos touch */
+  @media (hover: none) and (pointer: coarse) {
+    /* Melhora a experiência de touch */
+    * {
+      -webkit-tap-highlight-color: transparent;
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      -khtml-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+
+    /* Desabilita zoom em dispositivos touch */
+    input, textarea, select {
+      font-size: 16px !important;
+    }
+
+    /* Melhora a responsividade de botões em touch */
+    button, a, [role="button"] {
+      min-height: 44px;
+      min-width: 44px;
+    }
+  }
+
+  /* Estilos para dispositivos não-touch (desktop) */
+  @media (hover: hover) and (pointer: fine) {
+    /* Mantém seleção de texto em desktop */
+    * {
+      -webkit-user-select: auto;
+      -khtml-user-select: auto;
+      -moz-user-select: auto;
+      -ms-user-select: auto;
+      user-select: auto;
+    }
+  }
 `
 
 export const Container = styled.div`
