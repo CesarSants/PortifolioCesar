@@ -241,6 +241,23 @@ const TouchScrollController: React.FC<TouchScrollControllerProps> = ({
         return
       }
 
+      // Caso especial: área de repositórios vazia ('.cardContainer2')
+      const reposContainer = element.closest(
+        '.cardContainer2'
+      ) as HTMLElement | null
+      if (reposContainer) {
+        const style = window.getComputedStyle(reposContainer)
+        const overflowY = style.overflowY
+        const canScroll =
+          reposContainer.scrollHeight > reposContainer.clientHeight
+        const isScrollableY = overflowY === 'auto' || overflowY === 'scroll'
+        // Se não há scroll interno disponível, bloqueia scroll da página
+        if (!(canScroll && isScrollableY)) {
+          e.preventDefault()
+          return
+        }
+      }
+
       // Verifica se está dentro de um elemento com scroll (dinâmico + classes conhecidas)
       const scrollableElement =
         element.closest('.textContainer') ||
@@ -292,6 +309,23 @@ const TouchScrollController: React.FC<TouchScrollControllerProps> = ({
       if (isInCardArea) {
         e.preventDefault()
         return
+      }
+
+      // Caso especial: área de repositórios vazia ('.cardContainer2')
+      const reposContainer = element.closest(
+        '.cardContainer2'
+      ) as HTMLElement | null
+      if (reposContainer) {
+        const style = window.getComputedStyle(reposContainer)
+        const overflowY = style.overflowY
+        const canScroll =
+          reposContainer.scrollHeight > reposContainer.clientHeight
+        const isScrollableY = overflowY === 'auto' || overflowY === 'scroll'
+        // Se não há scroll interno disponível, bloqueia scroll da página
+        if (!(canScroll && isScrollableY)) {
+          e.preventDefault()
+          return
+        }
       }
 
       // Verifica se está dentro de um elemento com scroll (dinâmico + classes conhecidas)
