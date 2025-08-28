@@ -18,7 +18,31 @@ const Projects: React.FC = () => {
   const [menu, setMenu] = useState('site')
   const [activeButton, setActiveButton] = useState('site')
   const contentWrapperRef = useRef<HTMLDivElement>(null)
+  const sliderRef = useRef<Slider>(null)
   const [imageWidth, setImageWidth] = useState('390px')
+  const [currentSlide, setCurrentSlide] = useState(0)
+  const { data: tool, isLoading: isLoadingTool } = useGetToolsQuery()
+  const { data: web, isLoading: isLoadingWeb } = useGetWebsitesQuery()
+
+  const resetSlider = () => {
+    if (sliderRef.current) {
+      sliderRef.current.slickGoTo(0)
+      setCurrentSlide(0)
+    }
+  }
+
+  useEffect(() => {
+    resetSlider()
+  }, [menu]) // Reseta quando mudar de categoria
+
+  // Efeito para garantir que o slider comece na primeira posição quando os dados carregarem
+  useEffect(() => {
+    if (menu === 'site' && web) {
+      resetSlider()
+    } else if (menu === 'tools' && tool) {
+      resetSlider()
+    }
+  }, [web, tool, menu]) // Reseta quando os dados carregarem
 
   const [isVisible, setIsVisible] = useState(true)
 
@@ -27,9 +51,6 @@ const Projects: React.FC = () => {
   // const [showSlider, setShowSlider] = useState(true)
   // const [imageWidth, setImageWidth] = useState<SliderState['imageWidth']>(390)
   // const sliderRef = useRef<Slider>(null)
-
-  const { data: tool, isLoading: isLoadingTool } = useGetToolsQuery()
-  const { data: web, isLoading: isLoadingWeb } = useGetWebsitesQuery()
 
   const handleButtonClick = (menuName: 'site' | 'tools') => {
     setMenu(menuName)
@@ -149,12 +170,25 @@ const Projects: React.FC = () => {
     slidesToScroll: 2,
     useCSS: true,
     arrows: false,
+    initialSlide: 0,
+    accessibility: true,
+    adaptiveHeight: false,
+    // swipeToSlide: true,
+    // touchThreshold: 8,
+    // lazyLoad: 'ondemand',
+    beforeChange: (_: number, next: number) => {
+      setCurrentSlide(next)
+    },
+    afterChange: (current: number) => {
+      setCurrentSlide(current)
+    },
     responsive: [
       {
-        breakpoint: 867, // Tela com largura de até 867px
+        breakpoint: 867,
         settings: {
           slidesToShow: 1,
-          slidesToScroll: 1
+          slidesToScroll: 1,
+          initialSlide: 0
         }
       }
     ]
@@ -186,7 +220,6 @@ const Projects: React.FC = () => {
     }
   }
 
-  //original sem fade
   const handleToggleSlidesButtonClick = () => {
     setSettings((prevSettings) => {
       const newSettings = { ...prevSettings }
@@ -203,6 +236,11 @@ const Projects: React.FC = () => {
 
       return newSettings
     })
+
+    // Força o slider a voltar para a primeira posição após mudar o número de slides
+    setTimeout(() => {
+      resetSlider()
+    }, 0)
   }
 
   //fade na volta com problemas
@@ -312,7 +350,7 @@ const Projects: React.FC = () => {
               //   data-aos-duration="1000"
               // >
                 {/* <Slider className="slider" ref={sliderRef} {...settings}> */}
-                <Slider className="slider" {...settings}>
+                <Slider ref={sliderRef} className="slider" {...settings}>
                   {web?.map((project) => (
                     <div
                       className="cardContainer cardContainer1"
@@ -376,7 +414,7 @@ const Projects: React.FC = () => {
                 data-aos-delay="400"
                 data-aos-duration="1000"
               >
-                <Slider className="slider" {...settings}>
+                <Slider ref={sliderRef} className="slider" {...settings}>
                   {tool?.map((project) => (
                     <div
                       className="cardContainer cardContainer1"
