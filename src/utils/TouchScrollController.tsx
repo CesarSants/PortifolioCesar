@@ -423,20 +423,6 @@ const TouchScrollController: React.FC<TouchScrollControllerProps> = ({
 
     window.addEventListener('scroll', handleScroll, { passive: true })
 
-    // Listen for micro-scroll nudges from TopChromeProbe and re-snap instantly
-    const onProbeNudge = () => {
-      // Compute current section and immediately jump to it (no smooth) to
-      // avoid any drift caused by the micro-scroll while leaving browser
-      // chrome behaviour intact.
-      const idx = detectCurrentSection()
-      const el = document.getElementById(SECTION_IDS[idx])
-      if (el) {
-        const top = el.getBoundingClientRect().top + window.pageYOffset
-        window.scrollTo({ top, behavior: 'auto' })
-      }
-    }
-    window.addEventListener('topChromeProbeNudge', onProbeNudge)
-
     return () => {
       document.removeEventListener('touchstart', handleTouchStart)
       document.removeEventListener('touchend', handleTouchEnd)
@@ -450,7 +436,6 @@ const TouchScrollController: React.FC<TouchScrollControllerProps> = ({
       if (scrollEndTimeout.current) {
         clearTimeout(scrollEndTimeout.current)
       }
-      window.removeEventListener('topChromeProbeNudge', onProbeNudge)
     }
   }, [
     isTouchDevice,
