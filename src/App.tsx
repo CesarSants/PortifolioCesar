@@ -16,6 +16,7 @@ import Contact from './components/Contact'
 import { BrowserRouter, BrowserRouter as Router } from 'react-router-dom'
 import ScrollOnLoad from './utils/ScrollOnLoad'
 import TouchScrollController from './utils/TouchScrollController'
+import MobileNavBar from './components/Navigation/MobileNavBar'
 const App = () => {
   useEffect(() => {
     AOS.init()
@@ -27,6 +28,7 @@ const App = () => {
         {/* <ScrollOnLoad /> */}
         <GlobalCss />
         <Particles />
+        <MobileNavBar />
         <TouchScrollController>
           <Header />
           <Navigation />
