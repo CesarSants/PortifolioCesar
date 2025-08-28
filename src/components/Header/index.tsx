@@ -90,34 +90,69 @@ const Header: React.FC = () => {
     const navMenu = document.querySelector('.nav-menu') as HTMLElement | null
     if (!menuContainer || !navMenu) return
 
-    const onTouch = (e: TouchEvent) => {
-      try {
-        const t = e.touches[0]
-        if (!t) return
-        const x = t.clientX
-        const y = t.clientY
+    let startY: number | null = null
+    let lastScrollTop = 0
 
-        const menuRect = menuContainer.getBoundingClientRect()
-        const navRect = navMenu.getBoundingClientRect()
+    const onTouchStart = (e: TouchEvent) => {
+      startY = e.touches[0].clientY
+      lastScrollTop = menuContainer.scrollTop
+    }
 
-        const pointInside = (r: DOMRect) =>
-          x >= r.left && x <= r.right && y >= r.top && y <= r.bottom
+    const onTouchMove = (e: TouchEvent) => {
+      if (startY === null) return
 
-        if (pointInside(menuRect) && !pointInside(navRect)) {
-          e.preventDefault()
-          e.stopPropagation()
-        }
-      } catch (err) {
-        // ignore
+      const currentY = e.touches[0].clientY
+      const deltaY = startY - currentY
+      const newScrollTop = lastScrollTop + deltaY
+
+      // Verifica se está no limite superior ou inferior do scroll
+      const isAtTop = newScrollTop <= 0
+      const isAtBottom =
+        newScrollTop + menuContainer.clientHeight >= menuContainer.scrollHeight
+
+      // Se estiver no limite e tentar rolar além, previne o scroll da página
+      if ((isAtTop && deltaY < 0) || (isAtBottom && deltaY > 0)) {
+        e.preventDefault()
+        e.stopPropagation()
+        return
+      }
+
+      // Previne o scroll da página enquanto estiver rolando dentro do menu
+      const x = e.touches[0].clientX
+      const y = e.touches[0].clientY
+      const menuRect = menuContainer.getBoundingClientRect()
+      const navRect = navMenu.getBoundingClientRect()
+      const pointInside = (r: DOMRect) =>
+        x >= r.left && x <= r.right && y >= r.top && y <= r.bottom
+
+      if (pointInside(menuRect) && !pointInside(navRect)) {
+        e.preventDefault()
+        e.stopPropagation()
       }
     }
 
-    menuContainer.addEventListener('touchstart', onTouch, { passive: false })
-    menuContainer.addEventListener('touchmove', onTouch, { passive: false })
+    const onWheel = (e: WheelEvent) => {
+      const isAtTop = menuContainer.scrollTop <= 0
+      const isAtBottom =
+        menuContainer.scrollTop + menuContainer.clientHeight >=
+        menuContainer.scrollHeight
+
+      if ((isAtTop && e.deltaY < 0) || (isAtBottom && e.deltaY > 0)) {
+        e.preventDefault()
+        e.stopPropagation()
+      }
+    }
+
+    menuContainer.addEventListener('touchstart', onTouchStart, {
+      passive: false
+    })
+    menuContainer.addEventListener('touchmove', onTouchMove, { passive: false })
+    menuContainer.addEventListener('wheel', onWheel, { passive: false })
 
     return () => {
-      menuContainer.removeEventListener('touchstart', onTouch as any)
-      menuContainer.removeEventListener('touchmove', onTouch as any)
+      menuContainer.removeEventListener('touchstart', onTouchStart)
+      menuContainer.removeEventListener('touchmove', onTouchMove)
+      menuContainer.removeEventListener('wheel', onWheel)
     }
   }, [isMenuOpen, isTouchDevice])
 
