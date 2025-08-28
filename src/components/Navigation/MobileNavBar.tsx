@@ -84,6 +84,40 @@ const MobileNavBar: React.FC = () => {
 
     let scrollTimeout: NodeJS.Timeout | null = null
     let lastScrollValue = 0
+    let animationFrame: number | null = null
+
+    // Função que realiza a animação suave do scroll
+    const smoothScroll = (start: number, end: number) => {
+      const duration = 400 // Duração da animação em ms
+      const startTime = performance.now()
+
+      const animate = (currentTime: number) => {
+        const elapsed = currentTime - startTime
+        const progress = Math.min(elapsed / duration, 1)
+
+        // Função de easing para movimento mais natural
+        const easeOutQuart = (x: number) => 1 - Math.pow(1 - x, 4)
+        const easedProgress = easeOutQuart(progress)
+
+        // Calcula a posição atual do scroll
+        const currentPosition = start + (end - start) * easedProgress
+        overlay.scrollTop = currentPosition
+
+        // Continua a animação se não terminou
+        if (progress < 1) {
+          animationFrame = requestAnimationFrame(animate)
+        } else {
+          isScrollingSynced.current = false
+          animationFrame = null
+        }
+      }
+
+      // Inicia a animação
+      if (animationFrame) {
+        cancelAnimationFrame(animationFrame)
+      }
+      animationFrame = requestAnimationFrame(animate)
+    }
 
     // Sincroniza o scroll do overlay com a página após um delay
     const syncScroll = () => {
@@ -96,19 +130,13 @@ const MobileNavBar: React.FC = () => {
           clearTimeout(scrollTimeout)
         }
 
-        // Aplica o scroll com delay
+        // Aplica o scroll com delay e animação suave
         scrollTimeout = setTimeout(() => {
           if (overlay) {
             isScrollingSynced.current = true
-            overlay.scrollTo({
-              top: lastScrollValue,
-              behavior: 'auto' // Evita animação suave para ser mais preciso
-            })
-            requestAnimationFrame(() => {
-              isScrollingSynced.current = false
-            })
+            smoothScroll(overlay.scrollTop, lastScrollValue)
           }
-        }, 600) // Tempo para a animação de navegação completar
+        }, 600) // Tempo para a navegação completar
       }
     }
 
@@ -118,6 +146,9 @@ const MobileNavBar: React.FC = () => {
       window.removeEventListener('scroll', syncScroll)
       if (scrollTimeout) {
         clearTimeout(scrollTimeout)
+      }
+      if (animationFrame) {
+        cancelAnimationFrame(animationFrame)
       }
     }
   }, [isTouchDevice])
