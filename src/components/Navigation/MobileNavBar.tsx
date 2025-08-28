@@ -82,35 +82,43 @@ const MobileNavBar: React.FC = () => {
     const overlay = overlayRef.current
     if (!overlay) return
 
-    // Sincroniza o scroll do overlay com a página
+    let scrollTimeout: NodeJS.Timeout | null = null
+    let lastScrollValue = 0
+
+    // Sincroniza o scroll do overlay com a página após um delay
     const syncScroll = () => {
-      if (!isScrollingSynced.current && overlay) {
-        isScrollingSynced.current = true
-        overlay.scrollTop = window.scrollY
-        requestAnimationFrame(() => {
-          isScrollingSynced.current = false
-        })
+      if (!isScrollingSynced.current) {
+        // Armazena o valor atual do scroll
+        lastScrollValue = window.scrollY
+
+        // Cancela timeout anterior se existir
+        if (scrollTimeout) {
+          clearTimeout(scrollTimeout)
+        }
+
+        // Aplica o scroll com delay
+        scrollTimeout = setTimeout(() => {
+          if (overlay) {
+            isScrollingSynced.current = true
+            overlay.scrollTo({
+              top: lastScrollValue,
+              behavior: 'auto' // Evita animação suave para ser mais preciso
+            })
+            requestAnimationFrame(() => {
+              isScrollingSynced.current = false
+            })
+          }
+        }, 600) // Tempo para a animação de navegação completar
       }
     }
 
     window.addEventListener('scroll', syncScroll, { passive: true })
 
-    // Sincroniza quando o overlay rola
-    const handleOverlayScroll = () => {
-      if (!isScrollingSynced.current) {
-        isScrollingSynced.current = true
-        window.scrollTo(0, overlay.scrollTop)
-        requestAnimationFrame(() => {
-          isScrollingSynced.current = false
-        })
-      }
-    }
-
-    overlay.addEventListener('scroll', handleOverlayScroll, { passive: true })
-
     return () => {
       window.removeEventListener('scroll', syncScroll)
-      overlay.removeEventListener('scroll', handleOverlayScroll)
+      if (scrollTimeout) {
+        clearTimeout(scrollTimeout)
+      }
     }
   }, [isTouchDevice])
 
