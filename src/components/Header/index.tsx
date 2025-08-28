@@ -4,10 +4,12 @@ import ChevronComponentUp from '../../utils/chevronComponentUp'
 import { Head, HeaderContainer } from './styles'
 import topLogo from '../../assets/images/top-nome3.png'
 import { HashLink } from 'react-router-hash-link'
+import { useTouchDetection } from '../../utils/useTouchDetection'
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isHeaderVisible, setIsHeaderVisible] = useState<boolean>(false)
+  const isTouchDevice = useTouchDetection()
 
   // const handleMenuToggle = () => {
   //   setIsMenuOpen((prevState) => !prevState)
@@ -78,6 +80,46 @@ const Header: React.FC = () => {
       window.removeEventListener('scroll', handleScroll)
     }
   }, [])
+
+  useEffect(() => {
+    if (!isMenuOpen || !isTouchDevice) return
+
+    const menuContainer = document.querySelector(
+      '.menu-aberto'
+    ) as HTMLElement | null
+    const navMenu = document.querySelector('.nav-menu') as HTMLElement | null
+    if (!menuContainer || !navMenu) return
+
+    const onTouch = (e: TouchEvent) => {
+      try {
+        const t = e.touches[0]
+        if (!t) return
+        const x = t.clientX
+        const y = t.clientY
+
+        const menuRect = menuContainer.getBoundingClientRect()
+        const navRect = navMenu.getBoundingClientRect()
+
+        const pointInside = (r: DOMRect) =>
+          x >= r.left && x <= r.right && y >= r.top && y <= r.bottom
+
+        if (pointInside(menuRect) && !pointInside(navRect)) {
+          e.preventDefault()
+          e.stopPropagation()
+        }
+      } catch (err) {
+        // ignore
+      }
+    }
+
+    menuContainer.addEventListener('touchstart', onTouch, { passive: false })
+    menuContainer.addEventListener('touchmove', onTouch, { passive: false })
+
+    return () => {
+      menuContainer.removeEventListener('touchstart', onTouch as any)
+      menuContainer.removeEventListener('touchmove', onTouch as any)
+    }
+  }, [isMenuOpen, isTouchDevice])
 
   return (
     <Head className="header" id="header">
