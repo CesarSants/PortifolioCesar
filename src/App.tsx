@@ -16,6 +16,7 @@ import Contact from './components/Contact'
 import { BrowserRouter, BrowserRouter as Router } from 'react-router-dom'
 import ScrollOnLoad from './utils/ScrollOnLoad'
 import TouchScrollController from './utils/TouchScrollController'
+import TopChromeProbe from './components/TopChromeProbe/TopChromeProbe'
 
 const App = () => {
   useEffect(() => {
@@ -28,6 +29,7 @@ const App = () => {
         {/* <ScrollOnLoad /> */}
         <GlobalCss />
         <Particles />
+        <TopChromeProbe />
         <TouchScrollController>
           <Header />
           <Navigation />
